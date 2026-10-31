@@ -1,0 +1,1021 @@
+/* ==========================================================================
+   SECTION STYLES — nav, landing, about, projects, achievements, contact,
+   case-study pages. Colors/sizes come from tokens.css.
+   ========================================================================== */
+
+[hidden] {
+  display: none !important;
+}
+
+.hide-sm {
+  display: inline;
+}
+
+/* ==========================================================================
+   NAV
+   ========================================================================== */
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  height: var(--nav-h);
+  background: rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  backdrop-filter: saturate(1.4) blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner {
+  height: 100%;
+  width: min(100% - 2 * var(--gutter), var(--maxw));
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav-links {
+  display: flex;
+  gap: 0.25rem;
+}
+.nav-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--pill);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--muted);
+  transition: color 0.2s, background-color 0.2s;
+}
+.nav-links a:hover {
+  color: var(--ink);
+  background: rgba(36, 48, 74, 0.05);
+}
+.nav-links a[aria-current='true'] {
+  color: var(--ink);
+}
+.nav-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--a);
+  opacity: 0;
+  transform: scale(0.3);
+  transition: opacity 0.25s, transform 0.35s var(--ease-out);
+}
+.nav-links a[aria-current='true'] .nav-dot {
+  opacity: 1;
+  transform: none;
+}
+.brand,
+.nav-actions {
+  flex: 1 1 0; /* equal side columns keep the links centered */
+}
+.nav-actions {
+  justify-content: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.menu-btn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--white);
+  place-items: center;
+  cursor: pointer;
+}
+
+/* the nav now has six links, so it collapses to the menu button a bit earlier */
+@media (max-width: 1080px) {
+  .hide-sm {
+    display: none;
+  }
+  .menu-btn {
+    display: inline-grid;
+  }
+  .nav-links {
+    position: absolute;
+    top: var(--nav-h);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    background: var(--white);
+    padding: 0.5rem var(--gutter) 1.1rem;
+    border-bottom: 1px solid var(--line);
+    box-shadow: var(--shadow-soft);
+    display: none;
+  }
+  .nav[data-open] .nav-links {
+    display: flex;
+  }
+  .nav-links a {
+    padding: 0.85rem 0.5rem;
+    font-size: 1.05rem;
+    border-radius: 10px;
+  }
+}
+
+/* ==========================================================================
+   LANDING: giant name behind a cut-out photo, roles in front
+   ========================================================================== */
+.landing {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* never wider than the screen, even though the photo is */
+  align-items: center;
+  padding-top: var(--nav-h);
+  --stage-h: max(520px, min(calc(100svh - var(--nav-h) - 1.5rem), 860px));
+  --mx: 0; /* pointer position (-1..1), set by ui.js */
+  --my: 0;
+}
+.landing > * {
+  grid-area: 1 / 1;
+}
+.hero {
+  position: relative;
+}
+.hero-stage {
+  position: relative;
+  height: var(--stage-h);
+}
+.hero-hi {
+  position: absolute;
+  left: 0;
+  top: 5%;
+  z-index: 4;
+  font-size: clamp(1.1rem, 1rem + 0.8vw, 1.7rem);
+  font-weight: 700;
+  color: var(--muted);
+}
+/* The big first name, centered and behind the photo */
+.hero-word {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 18%;
+  pointer-events: none;
+}
+.hero-word-inner {
+  font-size: clamp(5rem, 26vw, 20rem);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.01em;
+  color: #fff;
+  text-shadow: 0 4px 24px rgba(28, 80, 130, 0.28), 0 1px 2px rgba(28, 80, 130, 0.25);
+  user-select: none;
+  transition: translate 0.35s var(--ease-out);
+  translate: calc(var(--mx) * -18px) calc(var(--my) * -8px);
+}
+/* The photo is its own layer on top of the page, so it can glide into the About section. */
+.hero-photo-wrap {
+  position: relative;
+  z-index: 30;
+  width: min(100% - 2 * var(--gutter), var(--maxw));
+  height: var(--stage-h);
+  margin-inline: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+.hero-photo-inner {
+  height: 100%;
+  /* "translate" (not "transform") for the pointer drift, so nothing fights over transform */
+  translate: calc(var(--mx) * 10px) calc(var(--my) * 5px);
+  transition: translate 0.35s var(--ease-out), opacity 0.14s ease-out, scale 0.14s ease-out;
+}
+/* snaps out of view the instant you scroll (class set by ui.js), and snaps back at the very top */
+.hero-photo-inner.is-away {
+  opacity: 0;
+  scale: 0.94;
+  transition: translate 0.35s var(--ease-out), opacity 0.1s ease-in, scale 0.1s ease-in;
+}
+.hero-photo-inner img {
+  height: 100%;
+  width: auto;
+  max-width: none;
+  /* the torso fades out softly at the bottom instead of a hard edge */
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 90%);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 90%);
+  filter: drop-shadow(0 18px 26px rgba(36, 48, 74, 0.18));
+}
+/* Roles: in the middle, in front of the photo */
+.hero-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  z-index: 3;
+  width: max-content;
+  max-width: min(94%, 54rem);
+  translate: -50% 0; /* "translate" (not "transform") so GSAP's entrance animation can't undo the centering */
+  padding: 0.85rem 1.8rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.78);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  box-shadow: var(--shadow-soft);
+}
+.roles {
+  font-size: clamp(1.2rem, 0.9rem + 1.5vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+.tagline {
+  margin-top: 0.3rem;
+  font-size: clamp(0.88rem, 0.82rem + 0.3vw, 1.05rem);
+  color: var(--muted);
+  text-wrap: balance;
+}
+@media (max-width: 700px) {
+  .hero-stage {
+    min-height: 480px;
+  }
+  .hero-caption {
+    bottom: 3%;
+    padding: 0.7rem 1.1rem;
+    border-radius: 24px;
+  }
+  /* Phone: name sits at the top, the photo is a little smaller so its head overlaps the letters */
+  .hero-hi {
+    top: 1%;
+  }
+  .hero-word {
+    align-items: flex-start;
+    padding-top: 12%;
+  }
+  .hero-word-inner {
+    font-size: 26vw;
+  }
+  .hero-photo-inner {
+    height: 90%;
+  }
+}
+
+/* ==========================================================================
+   ABOUT (Who am I?)
+   ========================================================================== */
+.about-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: center;
+}
+.photo {
+  position: relative;
+  max-width: 420px;
+  width: 100%;
+  perspective: 900px;
+}
+.photo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translate(14px, 14px);
+  border-radius: var(--radius-lg);
+  background: var(--shore);
+  opacity: 0.45;
+  z-index: 0;
+  transition: transform 0.4s var(--ease-out);
+}
+.photo:hover::before {
+  transform: translate(20px, 20px);
+}
+.photo-frame {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--a-soft);
+  box-shadow: var(--shadow-card);
+  /* Pointer tilt: --rx / --ry are set by ui.js while the pointer is over the photo */
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.25s var(--ease-out);
+  will-change: transform;
+}
+.photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 20%;
+}
+.js .photo-img {
+  transform: scale(1.12); /* a little extra so the parallax never shows gaps */
+}
+.photo-ph {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  font-size: 4.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--shore-deep);
+}
+.about-text {
+  display: grid;
+  gap: 1.1rem;
+  max-width: 38rem;
+  font-size: clamp(1.05rem, 1rem + 0.4vw, 1.25rem);
+}
+.about-facts {
+  margin-top: 0.5rem;
+}
+
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+}
+.pillar {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.5rem 1.7rem;
+  border-top: 4px solid var(--a);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+.pillar h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--a-deep);
+  margin-bottom: 0.5rem;
+}
+.pillar p {
+  color: var(--muted);
+}
+
+/* While GSAP is revealing an element, a CSS transition would fight it. */
+.js .pillar:not(.is-done),
+.js .skill-card:not(.is-done),
+.js .cert:not(.is-done) {
+  transition: none;
+}
+.pillar:hover,
+.skill-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 44px -22px rgba(36, 48, 74, 0.3);
+}
+
+.block {
+  margin-top: clamp(2rem, 4.5vw, 3rem);
+}
+/* the first block right under a chapter heading needs no extra gap */
+.chapter-head + .block {
+  margin-top: 0;
+}
+.block > .subhead {
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- Skills: compact cards, filterable ---------- */
+.skills-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.skills-head .subhead {
+  margin: 0;
+}
+/* The filter only makes sense with JavaScript, so it only shows then. */
+.skill-filters {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.js .skill-filters {
+  display: flex;
+}
+.filter {
+  min-height: 36px;
+  padding: 0.25rem 0.9rem;
+  border-radius: var(--pill);
+  border: 1px solid var(--line);
+  background: var(--white);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s var(--ease-out);
+}
+.filter:hover {
+  transform: translateY(-2px);
+}
+.filter.is-on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.skills {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+@media (max-width: 960px) {
+  .skills {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .skills {
+    grid-template-columns: 1fr;
+  }
+}
+.skill-card {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  padding: 1.15rem 1.25rem 1.3rem;
+  background: var(--white);
+  border-radius: var(--radius);
+  border-top: 4px solid var(--a);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+.skill-card[hidden] {
+  display: none;
+}
+.skill-card h4 {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--a-deep);
+}
+.skill-card .chip {
+  font-size: 0.85rem;
+  padding: 0.2rem 0.7rem;
+  transition: background-color 0.2s, border-color 0.2s, transform 0.2s var(--ease-out);
+}
+.skill-card .chip:hover {
+  background: var(--a-tint);
+  border-color: var(--a);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 820px) {
+  .about-intro {
+    grid-template-columns: 1fr;
+  }
+  .photo {
+    max-width: 320px;
+  }
+  .pillars {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   PROJECTS: chapter head, jump links (the boards and cards are in board.css)
+   ========================================================================== */
+.projects .chapter-head {
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+.jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.75rem;
+}
+.jump .chip {
+  gap: 0.5rem;
+  min-height: 40px;
+  text-decoration: none;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s;
+}
+.jump .chip:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+/* ==========================================================================
+   ACHIEVEMENTS
+   ========================================================================== */
+.focus-line {
+  max-width: 44rem;
+  margin-bottom: 1.25rem;
+  font-size: clamp(1rem, 0.95rem + 0.4vw, 1.2rem);
+}
+/* Compact list: one or two lines per paper */
+.pubs {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 0.15rem clamp(0.9rem, 2.5vw, 1.5rem);
+}
+.pub {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.6rem minmax(0, 1fr) auto;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  padding-block: 0.8rem;
+}
+.pub + .pub {
+  border-top: 1px solid var(--line);
+}
+.pub-year {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--aqua-deep);
+}
+.pub-main {
+  min-width: 0;
+  transition: transform 0.25s var(--ease-out);
+}
+.pub:hover .pub-main {
+  transform: translateX(4px);
+}
+.pub-title {
+  font-size: clamp(0.92rem, 0.88rem + 0.25vw, 1.02rem);
+  font-weight: 700;
+  line-height: 1.35;
+}
+.pub-title a {
+  text-decoration: none;
+  background-image: linear-gradient(var(--aqua), var(--aqua));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0 2px;
+  transition: background-size 0.3s var(--ease-out);
+}
+.pub-title a:hover {
+  background-size: 100% 2px;
+}
+.pub-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.55rem;
+  margin-top: 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.pub-role {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--aqua-deep);
+}
+.pub-venue {
+  color: var(--muted);
+  cursor: help;
+}
+.pub-tag {
+  padding: 0 0.55rem;
+  font-size: 0.72rem;
+}
+.pub-links {
+  display: flex;
+  gap: 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.pub-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--aqua-deep);
+  text-decoration: none;
+}
+.pub-link:hover {
+  text-decoration: underline;
+}
+
+.certs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+.cert {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: 1fr auto;
+  column-gap: 1.1rem;
+  row-gap: 1rem;
+  background: var(--white);
+  border-radius: var(--radius);
+  border-top: 4px solid var(--aqua);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+.cert:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 44px -22px rgba(36, 48, 74, 0.3);
+}
+.cert.secondary {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--line);
+  box-shadow: none;
+}
+.cert-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--aqua-tint);
+  color: var(--aqua-deep);
+}
+.cert-body {
+  min-width: 0;
+}
+.cert-year {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--aqua-deep);
+}
+.cert-title {
+  margin-top: 0.2rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.cert-issuer {
+  margin-top: 0.4rem;
+  font-weight: 600;
+}
+.cert-note {
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+.cert-desc {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+.cert-actions {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.cert-actions:empty {
+  display: none;
+}
+/* the registration letters are small gallery-style thumbnails beside the text; a click opens every page full size */
+.cert:has(.cert-preview) {
+  grid-template-columns: auto minmax(0, 1fr) clamp(104px, 11vw, 132px);
+}
+.cert-preview {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  align-self: start;
+  position: relative;
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: transparent;
+  cursor: zoom-in;
+  box-shadow: 0 10px 22px -12px rgba(30, 80, 120, 0.55);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+.cert-preview:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 16px 28px -12px rgba(30, 80, 120, 0.6);
+}
+.cert-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.5s var(--ease-out);
+}
+.cert-preview-hint {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 0.25rem 0;
+  background: rgba(36, 48, 74, 0.62);
+  color: #fff;
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.modal.is-pages .modal-foot {
+  display: none;
+}
+.modal.is-pages .modal-body {
+  display: block;
+  padding: 1rem;
+}
+.modal.is-pages .modal-body img {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  max-height: none;
+  margin: 0 auto 1rem;
+  box-shadow: 0 10px 30px -14px rgba(36, 48, 74, 0.5);
+}
+@media (max-width: 760px) {
+  .certs {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 520px) {
+  .cert:has(.cert-preview) {
+    grid-template-columns: 1fr;
+  }
+  .cert-preview {
+    grid-column: 1;
+    grid-row: auto;
+    width: 128px;
+  }
+  .cert {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .cert-actions {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 820px) {
+  .pub {
+    grid-template-columns: 3.2rem minmax(0, 1fr);
+  }
+  .pub-links {
+    grid-column: 2;
+  }
+}
+
+/* ---------- Credential modal ---------- */
+.modal {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  width: 100%;
+  max-width: min(94vw, 900px);
+  max-height: 92vh;
+}
+.modal::backdrop {
+  background: rgba(36, 48, 74, 0.45);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.modal-card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  max-height: 92vh;
+  overflow: hidden;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 30px 80px -20px rgba(36, 48, 74, 0.5);
+}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+.modal-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.modal-close {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--white);
+  cursor: pointer;
+}
+.modal-body {
+  overflow: auto;
+  min-height: 40vh;
+  background: var(--sand);
+  display: grid;
+  place-items: center;
+}
+.modal-body img {
+  width: auto;
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+}
+.modal-body iframe {
+  width: 100%;
+  height: 70vh;
+  border: 0;
+  background: #fff;
+}
+.modal-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.8rem 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+/* ==========================================================================
+   CONTACT
+   ========================================================================== */
+.contact {
+  padding-bottom: 0;
+}
+.contact-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+/* Email (long address) takes a full row; if an odd card is left over, it takes a full row too. */
+.contact-email,
+.contact-item:last-child:nth-child(even) {
+  grid-column: 1 / -1;
+}
+@media (max-width: 700px) {
+  .contact-list {
+    grid-template-columns: 1fr;
+  }
+}
+.contact-item {
+  display: flex;
+  align-items: stretch;
+  background: var(--white);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out),
+    border-color 0.2s;
+}
+/* While GSAP is revealing the card, a CSS transition would fight it. */
+.js .contact-item:not(.is-done) {
+  transition: none;
+}
+.contact-item:hover,
+.contact-item:focus-within {
+  transform: translateY(-3px);
+  border-color: var(--shore);
+  box-shadow: 0 22px 44px -22px rgba(111, 81, 54, 0.38);
+}
+.contact-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 76px;
+  padding: 1rem 1.3rem;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+}
+.contact-ico {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--shore-tint);
+  color: var(--shore-deep);
+  transition: background-color 0.25s, color 0.25s, transform 0.3s var(--ease-out);
+}
+.contact-item:hover .contact-ico,
+.contact-item:focus-within .contact-ico {
+  background: var(--shore-deep);
+  color: #fff;
+  transform: rotate(-8deg) scale(1.06);
+}
+.contact-text {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+.contact-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--shore-deep);
+}
+.contact-value {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.contact-go {
+  color: var(--muted);
+  transition: transform 0.25s var(--ease-out), color 0.2s;
+}
+.contact-item:hover .contact-go,
+.contact-item:focus-within .contact-go {
+  color: var(--shore-deep);
+  transform: translate(3px, -3px);
+}
+.copy-btn {
+  align-self: center;
+  margin-right: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0 1rem;
+  border-radius: var(--pill);
+  border: 1px solid transparent;
+  background: var(--shore-tint);
+  color: var(--shore-deep);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.copy-btn:hover {
+  background: #efe2cf;
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  padding-block: 1.75rem 2rem;
+  border-top: 1px solid rgba(36, 48, 74, 0.12);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.footer-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   REDUCED MOTION: everything visible, no transitions or movement
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .js .photo-img {
+    transform: none;
+  }
+  .photo-frame {
+    transform: none;
+  }
+  .card,
+  .pillar,
+  .skill-card,
+  .cert,
+  .contact-item,
+  .pager-link,
+  .pub-main {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   SCROLL PROGRESS BAR (thin line along the top of the page)
+   ========================================================================== */
+.progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 60;
+  pointer-events: none;
+}
+.progress span {
+  display: block;
+  height: 100%;
+  background: var(--bar, var(--sky));
+  transform-origin: left center;
+  transform: scaleX(var(--p, 0));
+  transition: background-color 0.6s ease;
+}

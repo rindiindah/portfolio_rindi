@@ -1,0 +1,207 @@
+/* ==========================================================================
+   HOVER: clear, deliberate responses (the page has no boxes, so hovering is what shows what is interactive)
+   - list rows (skills, publications, certificates, contact): a blue tint sweeps in from the left, an accent bar
+     grows, and the content slides over
+   - skill items lift and their icon pops
+   - links, filters and buttons: lines draw in, arrows move
+   - media: the carousel lifts and its arrows swell, the portrait lifts
+   Uses "translate" / "scale" (not "transform"), because GSAP uses "transform" for the scroll reveals.
+   Switched off with "reduce motion" and on touch screens (no hover there).
+   ========================================================================== */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  /* ---- rows: tint sweep + accent bar ---- */
+  .skill-row,
+  .pub,
+  .cert,
+  .contact-item {
+    position: relative;
+    isolation: isolate;
+  }
+  .skill-row::before,
+  .pub::before,
+  .cert::before,
+  .contact-item::before {
+    content: '';
+    position: absolute;
+    inset: 0 -0.9rem;
+    z-index: -1;
+    border-radius: 10px;
+    background: linear-gradient(90deg, rgba(79, 154, 214, 0.26), rgba(79, 154, 214, 0.06) 70%, rgba(79, 154, 214, 0));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.45s var(--ease-out);
+    pointer-events: none;
+  }
+  .skill-row::after,
+  .pub::after,
+  .cert::after,
+  .contact-item::after {
+    content: '';
+    position: absolute;
+    left: -0.9rem;
+    top: 16%;
+    bottom: 16%;
+    width: 4px;
+    border-radius: 4px;
+    background: var(--sky-deep);
+    transform: scaleY(0);
+    transition: transform 0.35s var(--ease-out) 0.05s;
+    pointer-events: none;
+  }
+  .skill-row:hover::before,
+  .pub:hover::before,
+  .cert:hover::before,
+  .contact-item:hover::before,
+  .contact-item:focus-within::before {
+    transform: scaleX(1);
+  }
+  .skill-row:hover::after,
+  .pub:hover::after,
+  .cert:hover::after,
+  .contact-item:hover::after,
+  .contact-item:focus-within::after {
+    transform: scaleY(1);
+  }
+  /* the row's content slides over a little */
+  .skill-row > *,
+  .pub > *,
+  .cert > *,
+  .contact-item > * {
+    transition: translate 0.4s var(--ease-out);
+  }
+  .skill-row:hover > *,
+  .pub:hover > *,
+  .cert:hover > *,
+  .contact-item:hover > * {
+    translate: 10px 0;
+  }
+  .skill-row:hover h4 {
+    letter-spacing: 0.16em;
+  }
+  .skill-row h4 {
+    transition: translate 0.4s var(--ease-out), letter-spacing 0.4s var(--ease-out);
+  }
+
+  /* ---- skill items: lift, and the icon pops ---- */
+  .skill-items li {
+    transition: translate 0.25s var(--ease-out), color 0.2s;
+  }
+  .skill-items li:hover {
+    translate: 0 -4px;
+    color: var(--sky-deep);
+  }
+  .skill-icon {
+    transition: scale 0.3s var(--ease-out), rotate 0.3s var(--ease-out);
+  }
+  .skill-items li:hover .skill-icon {
+    scale: 1.35;
+    rotate: -8deg;
+  }
+
+  /* ---- filters: the underline draws in from the middle ---- */
+  .filter {
+    border-bottom: 0;
+    background-image: linear-gradient(var(--sky-deep), var(--sky-deep));
+    background-repeat: no-repeat;
+    background-position: 50% 100%;
+    background-size: 0% 2px;
+    transition: color 0.2s, background-size 0.3s var(--ease-out), translate 0.2s var(--ease-out);
+  }
+  .filter:hover {
+    background-size: 100% 2px;
+    translate: 0 -2px;
+  }
+  .filter.is-on {
+    background-size: 100% 2px;
+  }
+
+  /* ---- publications, certificates, contact ---- */
+  .pub-year {
+    transition: scale 0.3s var(--ease-out);
+    transform-origin: left center;
+  }
+  .pub:hover .pub-year {
+    scale: 1.18;
+  }
+  .pub-link,
+  .cert-actions .btn,
+  .desc-links .btn,
+  .copy-btn {
+    transition: translate 0.25s var(--ease-out), color 0.2s;
+  }
+  .pub-link:hover,
+  .cert-actions .btn:hover,
+  .desc-links .btn:hover,
+  .copy-btn:hover {
+    translate: 3px 0;
+    color: var(--ink);
+  }
+  .contact-icon,
+  .contact-ico {
+    transition: scale 0.3s var(--ease-out), rotate 0.3s var(--ease-out);
+  }
+  .contact-item:hover .contact-ico {
+    scale: 1.3;
+    rotate: -10deg;
+  }
+  .contact-item:hover .contact-go {
+    transform: translate(6px, -6px);
+  }
+  .contact-item:hover .contact-value {
+    letter-spacing: 0.01em;
+  }
+
+  /* ---- portrait: lifts ---- */
+  .photo-frame {
+    transition: translate 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+  }
+  .photo:hover .photo-frame {
+    translate: 0 -8px;
+    box-shadow: 0 30px 44px -24px rgba(30, 70, 110, 0.6);
+  }
+
+  /* ---- project carousel: lifts, arrows swell, dots grow ---- */
+  .car-box {
+    transition: translate 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+  }
+  .car-box:hover {
+    translate: 0 -6px;
+    box-shadow: 0 30px 46px -22px rgba(30, 80, 120, 0.6);
+  }
+  .car-btn {
+    transition: transform 0.3s var(--ease-out), color 0.2s;
+  }
+  .car-prev:hover {
+    transform: translateX(-8px) scale(1.25);
+    color: var(--sky-deep);
+  }
+  .car-next:hover {
+    transform: translateX(8px) scale(1.25);
+    color: var(--sky-deep);
+  }
+  .sdot:hover {
+    transform: scale(1.7);
+    background: var(--sky-deep);
+  }
+  .desc-tools .chip {
+    transition: translate 0.25s var(--ease-out), color 0.2s;
+  }
+  .desc-tools .chip:hover {
+    translate: 0 -4px;
+    color: var(--ink);
+  }
+
+  /* ---- buttons and the hero caption ---- */
+  .btn:hover {
+    transform: translateY(-3px) scale(1.03);
+  }
+  .hero-caption {
+    transition: translate 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+  }
+  .footer-top {
+    transition: translate 0.25s var(--ease-out);
+  }
+  .footer-top:hover {
+    translate: 0 -4px;
+  }
+}

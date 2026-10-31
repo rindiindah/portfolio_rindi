@@ -1,0 +1,95 @@
+---
+/**
+ * The slides of one project (just the <figure> elements, the carousel wraps them).
+ * `index` is only used by the "Other projects" carousel, to know which project a slide belongs to.
+ */
+import { fmt } from '../lib/utils.js';
+
+const { project: p, slides, index } = Astro.props;
+const method = p.method ?? [];
+const tools = (p.tools ?? []).filter((t) => !t.startsWith('[TO FILL'));
+const total = slides.length;
+---
+
+{
+  slides.map((s, i) => (
+    <figure
+      class={`slide slide-${s.type}`}
+      role="group"
+      aria-roledescription="slide"
+      aria-label={`${i + 1} of ${total}`}
+      data-project={index}
+      style={s.type === 'image' ? `--bg: url("${s.img.src}")${s.img.position ? `; --pos: ${s.img.position}` : ''}` : undefined}
+    >
+      {s.type === 'image' && (
+        <>
+          <img src={s.img.src} alt={s.img.alt} loading="lazy" decoding="async" />
+          {s.img.caption && <figcaption class="slide-caption">{s.img.caption}</figcaption>}
+        </>
+      )}
+      {s.type === 'video' && (
+        <>
+          <video
+            class="slide-media"
+            src={s.img.video}
+            poster={s.img.src || undefined}
+            muted
+            playsinline
+            preload="metadata"
+            aria-label={s.img.alt}
+            data-slide-video
+          />
+          {s.img.caption && <figcaption class="slide-caption">{s.img.caption}</figcaption>}
+          <button class="video-toggle" type="button" data-video-toggle aria-label="Play or pause the video">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="vt-play" d="M8 5v14l11-7z"/><path class="vt-pause" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+          </button>
+          <span class="video-progress" aria-hidden="true"><i data-video-progress></i></span>
+        </>
+      )}
+      {s.type === 'glance' && (
+        <div class="slide-panel">
+          <p class="slide-eyebrow">At a glance</p>
+          {p.keyResult && (
+            <p class="glance-stat">
+              <span class="glance-value">{p.keyResult.value}</span>
+              <span class="glance-label" set:html={fmt(p.keyResult.label)} />
+            </p>
+          )}
+          {p.facts.length > 0 && (
+            <dl class="glance-facts">
+              {p.facts.map((f) => (
+                <div>
+                  <dt>{f.label}</dt>
+                  <dd set:html={fmt(f.value)} />
+                </div>
+              ))}
+            </dl>
+          )}
+        </div>
+      )}
+      {s.type === 'built' && (
+        <div class="slide-panel">
+          <p class="slide-eyebrow">How it came together</p>
+          {method.length > 0 && (
+            <ol class="flow">
+              {method.map((m, k) => (
+                <li>
+                  <span class="flow-n">{k + 1}</span>
+                  <span set:html={fmt(m)} />
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      )}
+      {s.type === 'tools' && (
+        <div class="slide-panel">
+          <p class="slide-eyebrow">Tools &amp; methods</p>
+          <ul class="chip-list tool-cloud">
+            {tools.map((t) => <li class="chip">{t}</li>)}
+          </ul>
+        </div>
+      )}
+    </figure>
+  ))
+}

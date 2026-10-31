@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import ProjectShowcase from './ProjectShowcase.astro';
+import OtherProjects from './OtherProjects.astro';
+import Sparkle from './Sparkle.astro';
+
+const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const featured = all.filter((p) => p.data.featured);
+const others = all.filter((p) => !p.data.featured);
+---
+
+<section
+  id="projects"
+  class="chapter projects"
+  data-chapter="projects"
+  data-tint="#E6F1FA"
+  data-accent="sky"
+>
+  <div class="container">
+    <header class="chapter-head" data-reveal>
+      <Sparkle size={44} class="deco deco-1" />
+      <Sparkle size={24} class="deco deco-2" delay={1.1} />
+      <p class="eyebrow">Projects</p>
+      <h2 class="chapter-title">What I <span class="hl">build</span></h2>
+      <p class="chapter-lede">
+        I build data-driven projects, from interactive dashboards to predictive models, turning real-world data into useful insights and practical solutions.
+      </p>
+    </header>
+  </div>
+
+  {featured.map((entry) => <ProjectShowcase entry={entry} />)}
+
+  <OtherProjects entries={others} />
+</section>

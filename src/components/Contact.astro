@@ -1,0 +1,126 @@
+---
+import Icon from './Icon.astro';
+import Sparkle from './Sparkle.astro';
+import profile from '../data/profile.json';
+import { esc, hasValue } from '../lib/utils.js';
+
+const c = profile.contact;
+// The WhatsApp number is kept out of the repository: set WHATSAPP_NUMBER in .env (local) or in Vercel's environment variables.
+const whatsapp = (import.meta.env.WHATSAPP_NUMBER ?? '').replace(/\D/g, '');
+const year = new Date().getFullYear();
+const showFooter = Astro.props.footer !== false;
+---
+
+<section
+  id="contact"
+  class="chapter contact"
+  data-chapter="contact"
+  data-tint="#F8F0E2"
+  data-accent="shore"
+>
+  <div class="container">
+    <header class="chapter-head" data-reveal>
+      <Sparkle size={44} class="deco deco-1" />
+      <Sparkle size={24} class="deco deco-2" delay={1.1} />
+      <p class="eyebrow">Contact</p>
+      <h2 class="chapter-title">Let's connect</h2>
+      <p class="chapter-lede">
+        I'm open to Data Scientist, research, and happy to collaborate.
+      </p>
+    </header>
+
+    <ul class="contact-list">
+      <!-- Email with copy button -->
+      <li class="contact-item contact-email" data-reveal="pop">
+        <a class="contact-main" href={`mailto:${c.email}`}>
+          <span class="contact-ico"><Icon name="mail" size={20} /></span>
+          <span class="contact-text">
+            <span class="contact-label">Email</span>
+            <span class="contact-value" set:html={esc(c.email).replace('@', '<wbr>@')} />
+          </span>
+        </a>
+        <button class="copy-btn" type="button" data-copy={c.email} aria-label="Copy email address">
+          <Icon name="copy" size={18} />
+          <span data-copy-state>Copy</span>
+        </button>
+      </li>
+
+      <li class="contact-item" data-reveal="pop">
+        <a class="contact-main" href={c.linkedin} target="_blank" rel="noopener noreferrer">
+          <span class="contact-ico"><Icon name="briefcase" size={20} /></span>
+          <span class="contact-text">
+            <span class="contact-label">LinkedIn</span>
+            <span class="contact-value">in/rindiindah</span>
+          </span>
+          <Icon name="arrow-up-right" size={18} class="contact-go" />
+        </a>
+      </li>
+
+      {
+        hasValue(c.github) ? (
+          <li class="contact-item" data-reveal="pop">
+            <a class="contact-main" href={c.github} target="_blank" rel="noopener noreferrer">
+              <span class="contact-ico"><Icon name="code" size={20} /></span>
+              <span class="contact-text">
+                <span class="contact-label">GitHub</span>
+                <span class="contact-value">{c.github.replace(/^https?:\/\//, '')}</span>
+              </span>
+              <Icon name="arrow-up-right" size={18} class="contact-go" />
+            </a>
+          </li>
+        ) : null
+      }
+
+      {
+        hasValue(c.youtube) ? (
+          <li class="contact-item" data-reveal="pop">
+            <a class="contact-main" href={c.youtube} target="_blank" rel="noopener noreferrer">
+              <span class="contact-ico"><Icon name="play" size={20} /></span>
+              <span class="contact-text">
+                <span class="contact-label">YouTube</span>
+                <span class="contact-value">{c.youtubeName}</span>
+              </span>
+              <Icon name="arrow-up-right" size={18} class="contact-go" />
+            </a>
+          </li>
+        ) : null
+      }
+
+      <!-- WhatsApp instead of a raw phone number (keeps the number away from scrapers) -->
+      {
+        whatsapp && (
+          <li class="contact-item" data-reveal="pop">
+            <a
+              class="contact-main"
+              href={`https://wa.me/${whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="contact-ico"><Icon name="message-circle" size={20} /></span>
+              <span class="contact-text">
+                <span class="contact-label">WhatsApp</span>
+                <span class="contact-value">Message me</span>
+              </span>
+              <Icon name="arrow-up-right" size={18} class="contact-go" />
+            </a>
+          </li>
+        )
+      }
+    </ul>
+
+  </div>
+
+  {
+    showFooter && (
+      <footer class="footer container">
+        <p>
+          © {year} {profile.name} · Built with Astro
+        </p>
+        <a class="footer-top" href="#top">
+          Back to top
+          <Icon name="arrow-up" size={16} />
+        </a>
+      </footer>
+    )
+  }
+</section>

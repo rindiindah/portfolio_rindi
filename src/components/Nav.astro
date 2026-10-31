@@ -1,0 +1,48 @@
+---
+import Icon from './Icon.astro';
+import profile from '../data/profile.json';
+
+// On the home page links jump within the page ("#about").
+// On case-study pages they go back to the home page ("/#about").
+const { prefix = '' } = Astro.props;
+
+const links = [
+  { id: 'about', href: 'about', label: 'About', accent: 'dusk' },
+  { id: 'skills', href: 'skills', label: 'Skills', accent: 'aqua' },
+  { id: 'projects', href: 'projects', label: 'Projects', accent: 'sky' },
+  { id: 'achievements', href: 'achievements', label: 'Achievements', accent: 'aqua' },
+  { id: 'contact', href: 'contact', label: 'Contact', accent: 'shore' },
+];
+---
+
+<header class="nav" data-nav>
+  <div class="nav-inner">
+    <a class="brand" href={`${prefix}#top`} aria-label={`${profile.name}, back to the top`}>
+      {profile.name}
+    </a>
+
+    <nav class="nav-links" id="nav-menu" aria-label="Primary">
+      {
+        links.map((l) => (
+          <a href={`${prefix}#${l.href}`} data-nav-link={l.id} data-accent={l.accent}>
+            <span class="nav-dot" aria-hidden="true" />
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="nav-actions">
+      <button
+        class="menu-btn"
+        type="button"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+        aria-label="Open menu"
+        data-menu-btn
+      >
+        <Icon name="menu" size={22} />
+      </button>
+    </div>
+  </div>
+</header>

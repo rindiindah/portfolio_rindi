@@ -1,0 +1,108 @@
+---
+import profile from '../data/profile.json';
+import skillIcons from '../data/skill-icons.json';
+import Sparkle from './Sparkle.astro';
+import { firstExisting } from '../lib/utils.js';
+
+// Photo: drop a file named rindi.webp / .jpg / .png into public/images/profile/
+const photo = firstExisting(profile.photoCandidates);
+const initials = profile.name
+  .split(' ')
+  .map((w) => w[0])
+  .slice(0, 3)
+  .join('');
+
+// Cycle the four accent colors over the skill groups
+const accents = ['sky', 'aqua', 'shore', 'dusk'];
+// A little sea-life picture tucked into the corner of each card
+const skillArt = ['scallop', 'grass-1', 'reef', 'grass-2', 'pearl', 'goldfish'];
+---
+
+<section
+  id="about"
+  class="chapter about"
+  data-chapter="about"
+  data-tint="#E9EDFA"
+  data-accent="dusk"
+>
+  <div class="container">
+    <header class="chapter-head" data-reveal>
+      <Sparkle size={44} class="deco deco-1" />
+      <Sparkle size={24} class="deco deco-2" delay={1.1} />
+      <p class="eyebrow">About</p>
+      <h2 class="chapter-title">Who am <span class="hl">I</span></h2>
+    </header>
+
+    <!-- Photo + intro -->
+    <div class="about-intro">
+      <figure class="photo" data-reveal data-tilt>
+        <div class="photo-frame">
+          {
+            photo ? (
+              <img
+                class="photo-img"
+                src={photo}
+                alt={`Portrait of ${profile.name}`}
+                width="960"
+                height="1200"
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              <div class="photo-ph" aria-hidden="true">
+                <span>{initials}</span>
+              </div>
+            )
+          }
+        </div>
+        <Sparkle size={40} class="photo-sparkle ps-1" />
+        <Sparkle size={26} class="photo-sparkle ps-2" delay={1.3} />
+        <Sparkle size={32} class="photo-sparkle ps-3" delay={2.1} />
+      </figure>
+
+      <div class="about-text">
+        {profile.intro.map((p) => <p data-reveal>{p}</p>)}
+      </div>
+    </div>
+
+    <!-- Skills: compact cards, filterable (no percentage bars) -->
+    <div class="block" id="skills" data-skills data-chapter="skills" data-accent="aqua">
+      <div class="skills-head" data-reveal>
+        <h3 class="subhead">Skills</h3>
+        <div class="skill-filters" role="group" aria-label="Filter skills by group">
+          <button type="button" class="filter is-on" data-filter="all" aria-pressed="true">All</button>
+          {
+            profile.skills.map((g) => (
+              <button type="button" class="filter" data-filter={g.group} aria-pressed="false">
+                {g.group}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+      <div class="skills">
+        {
+          profile.skills.map((g, i) => (
+            <div class="skill-card" data-accent={accents[i % accents.length]} data-group={g.group} data-reveal="pop">
+              <h4>{g.group}</h4>
+              <ul class="chip-list">
+                {
+                  g.items.map((item) => {
+                    const icon = skillIcons[item];
+                    return (
+                      <li class:list={['chip', { 'chip-icon': Boolean(icon) }]}>
+                        {icon && <img class="skill-icon" src={`/icons/skills/${icon}`} alt="" width="20" height="20" loading="lazy" decoding="async" />}
+                        {item}
+                      </li>
+                    );
+                  })
+                }
+              </ul>
+              <img class="card-art" src={`/images/background/${skillArt[i % skillArt.length]}.webp`} alt="" loading="lazy" decoding="async" />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

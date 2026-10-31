@@ -1,0 +1,22 @@
+{
+  "Python": "python.svg",
+  "SQL": "sql.svg",
+  "Java": "java.svg",
+  "C++": "cpp.svg",
+  "Power BI": "powerbi.svg",
+  "Pentaho": "pentaho.svg",
+  "PySpark": "pyspark.svg",
+  "Streamlit": "streamlit.svg",
+  "Microsoft Excel": "excel.svg",
+  "HTML": "html.svg",
+  "CSS": "css.svg",
+  "JavaScript": "javascript.svg",
+  "Laravel": "laravel.svg",
+  "PHP": "php.svg",
+  "Tailwind CSS": "tailwind.svg",
+  "WordPress": "wordpress.svg",
+  "GitHub": "github.svg",
+  "VS Code": "vscode.svg",
+  "Google Colab": "colab.svg",
+  "Supabase": "supabase.svg"
+}

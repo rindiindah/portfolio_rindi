@@ -1,0 +1,119 @@
+{
+  "name": "Rindi Indah Lestari",
+  "title": "Data Scientist, Researcher, Content Creator",
+  "description": "Data Scientist, Researcher, and Content Creator.",
+  "location": "Banyumas, Indonesia",
+  "roles": [
+    {
+      "label": "Data Scientist",
+      "accent": "sky"
+    },
+    {
+      "label": "Researcher",
+      "accent": "aqua"
+    },
+    {
+      "label": "Content Creator",
+      "accent": "shore"
+    }
+  ],
+  "proof": [
+    "5 publications",
+    "BNSP Certified Data Scientist",
+    "3.90 GPA · Cum Laude",
+    "2 IP registrations"
+  ],
+  "heroPhoto": "/images/profile/rindi-cutout.webp",
+  "photoCandidates": [
+    "/images/profile/rindi.webp",
+    "/images/profile/rindi.jpg",
+    "/images/profile/rindi.jpeg",
+    "/images/profile/rindi.png"
+  ],
+  "intro": [
+    "I’m a graduate of Telkom University with a Bachelor’s degree in Information Systems, 3.90 GPA with Cum Laude honors.",
+    "I’m also a researcher with five publications in air quality and environmental science, and a content creator with a YouTube channel that has grown to 9,700+ subscribers."
+  ],
+  "pillars": [
+    {
+      "title": "Researcher",
+      "accent": "aqua",
+      "text": "5 publications, 4 of them on air-quality forecasting with LSTM, GRU, CNN, and hybrid models."
+    },
+    {
+      "title": "Content Creator",
+      "accent": "dusk",
+      "text": "9,700+ subscribers. Planning, producing, and communicating to a real audience."
+    }
+  ],
+  "skills": [
+    {
+      "group": "Programming",
+      "items": [
+        "Python",
+        "SQL",
+        "Java",
+        "C++"
+      ]
+    },
+    {
+      "group": "Machine Learning",
+      "items": [
+        "LSTM",
+        "GRU",
+        "CNN",
+        "XGBoost",
+        "ARIMA",
+        "SVM",
+        "Logistic Regression",
+        "TF-IDF / NLP"
+      ]
+    },
+    {
+      "group": "Data & BI",
+      "items": [
+        "Power BI",
+        "Pentaho",
+        "PySpark",
+        "Streamlit",
+        "Microsoft Excel"
+      ]
+    },
+    {
+      "group": "Web",
+      "items": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Laravel",
+        "PHP",
+        "Tailwind CSS",
+        "WordPress"
+      ]
+    },
+    {
+      "group": "Tools",
+      "items": [
+        "GitHub",
+        "VS Code",
+        "Google Colab",
+        "Supabase"
+      ]
+    },
+    {
+      "group": "Interpersonal",
+      "items": [
+        "Team collaboration",
+        "Communication",
+        "Data-driven problem solving"
+      ]
+    }
+  ],
+  "contact": {
+    "email": "rindiindahlestari@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/rindiindah",
+    "github": "https://github.com/rindiindah",
+    "youtube": "https://www.youtube.com/@rindiantika01",
+    "youtubeName": "Rindi Antika"
+  }
+}

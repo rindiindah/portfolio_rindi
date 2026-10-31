@@ -1,0 +1,519 @@
+/* ==========================================================================
+   STICKER THEME: the playful, busy look. Loaded after sections.css, so it restyles the
+   existing cards with thick ink outlines, hard offset shadows, tiny resting tilts,
+   and "straighten + lift" on hover. Also: twinkling sparkles and the floating hero photo.
+
+   Why "rotate" and "translate" (not "transform"): GSAP animates "transform" when things
+   scroll in, so the resting tilt and the hover lift use the separate CSS properties.
+   ========================================================================== */
+
+/* ---------- The sticker card ---------- */
+.sticker,
+.pillar,
+.skill-card,
+.cert,
+.contact-item,
+.pubs,
+.photo-frame {
+  /* a soft tint of the card's own color (never plain white) */
+  background: linear-gradient(155deg, var(--a-soft, #e3effa) 0%, var(--a-tint, #f3f8fc) 100%);
+  border: 2.5px solid var(--ink);
+  border-radius: 22px;
+  box-shadow: 6px 6px 0 var(--a, var(--sky));
+  rotate: var(--rot, 0deg);
+  transition: translate 0.28s var(--ease-out), rotate 0.28s var(--ease-out),
+    box-shadow 0.28s var(--ease-out), background-color 0.2s;
+}
+.sticker:hover,
+.pillar:hover,
+.skill-card:hover,
+.cert:hover,
+.contact-item:hover,
+.contact-item:focus-within {
+  translate: -3px -3px;
+  rotate: 0deg;
+  transform: none;
+  box-shadow: 10px 10px 0 var(--a, var(--sky));
+  border-color: var(--ink);
+}
+/* While GSAP is revealing a card, a CSS transition would fight it. */
+.js [data-reveal]:not(.is-done) {
+  transition: none;
+}
+
+/* Resting tilts: each card leans a little differently */
+.pillar:nth-child(odd) {
+  --rot: -0.9deg;
+}
+.pillar:nth-child(even) {
+  --rot: 0.8deg;
+}
+.skill-card:nth-child(3n + 1) {
+  --rot: -0.8deg;
+}
+.skill-card:nth-child(3n + 2) {
+  --rot: 0.6deg;
+}
+.skill-card:nth-child(3n) {
+  --rot: -0.4deg;
+}
+/* Certificates and papers sit perfectly straight: a tilted box makes its text look soft until you hover */
+.cert:nth-child(odd),
+.cert:nth-child(even) {
+  --rot: 0deg;
+}
+.cert,
+.pubs {
+  --a: var(--aqua);
+}
+.contact-item {
+  --a: var(--shore);
+}
+.pubs {
+  --rot: 0deg;
+}
+
+/* Existing card rules that the sticker look replaces */
+.pillar,
+.skill-card,
+.cert {
+  border-top-width: 2.5px;
+  border-top-color: var(--ink);
+}
+.pillar:hover,
+.skill-card:hover,
+.cert:hover {
+  box-shadow: 10px 10px 0 var(--a, var(--sky));
+}
+.cert.secondary {
+  border-style: dashed;
+  box-shadow: 6px 6px 0 var(--line);
+}
+.contact-item:hover .contact-ico,
+.contact-item:focus-within .contact-ico {
+  background: var(--ink);
+}
+.contact-main {
+  border-radius: 20px;
+}
+
+/* Publications: the year is a little stamp */
+.pub-year {
+  justify-self: start;
+  padding: 0.05rem 0.6rem;
+  background: var(--aqua-tint);
+  border: 2px solid var(--ink);
+  border-radius: var(--pill);
+  rotate: -4deg;
+  font-size: 0.85rem;
+  color: var(--ink);
+  transition: rotate 0.25s var(--ease-out), background-color 0.2s;
+}
+.pub:hover .pub-year {
+  rotate: 3deg;
+  background: var(--aqua);
+}
+
+/* Photo: framed like a sticker */
+.photo::before {
+  display: none;
+}
+.photo-frame {
+  --a: var(--dusk);
+  --rot: 0deg;
+  box-shadow: 9px 9px 0 var(--dusk);
+  /* tilt toward the pointer is set by ui.js */
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+}
+.photo:hover .photo-frame {
+  translate: 0 0;
+}
+.photo-frame {
+  background: radial-gradient(circle at 50% 34%, #fff 0%, var(--a-soft) 62%, var(--a-tint) 100%);
+}
+
+/* ---------- Sparkles: small twinkling star-like glows ---------- */
+.sparkle {
+  --sp: #bfe3ff;
+  fill: #fff;
+  stroke: var(--sp);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 9px var(--sp));
+  animation: twinkle 3.2s ease-in-out infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.45) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05) rotate(45deg);
+  }
+}
+
+/* Next to the big chapter titles */
+.chapter-head {
+  position: relative;
+}
+.deco {
+  position: absolute;
+}
+.deco-1 {
+  top: -0.2rem;
+  right: 0;
+}
+.deco-2 {
+  top: 2.8rem;
+  right: 4.2rem;
+}
+
+/* Around the About photo */
+.photo-sparkle {
+  position: absolute;
+  z-index: 3;
+}
+.ps-1 {
+  top: -18px;
+  right: -16px;
+}
+.ps-2 {
+  top: 30%;
+  left: -18px;
+}
+.ps-3 {
+  right: -12px;
+  bottom: 18%;
+}
+
+/* ---------- Hero: bouquets, floating photo, sparkles ---------- */
+.hero-flowers {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.hf {
+  position: absolute;
+  bottom: -4%;
+  height: 64%;
+  width: auto;
+  max-width: none;
+  transform-origin: 50% 100%;
+  animation: sway 7s ease-in-out infinite alternate;
+  -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+}
+.hf-l {
+  left: -3%;
+}
+.hf-r {
+  right: -3%;
+  scale: -1 1; /* mirrored, so the two sides match */
+  animation-delay: -3s;
+}
+@keyframes sway {
+  from {
+    transform: rotate(-1.2deg);
+  }
+  to {
+    transform: rotate(1.4deg);
+  }
+}
+
+/* ---------- Hero: floating photo + sparkles ---------- */
+.hero-photo-inner img {
+  animation: float-photo 6.5s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes float-photo {
+  from {
+    transform: translate3d(0, 6px, 0) rotate(-1.1deg);
+  }
+  to {
+    transform: translate3d(0, -14px, 0) rotate(1.1deg);
+  }
+}
+.hero-sparkles {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.hs {
+  position: absolute;
+}
+.hs-1 {
+  left: 78%;
+  top: 8%;
+}
+.hs-2 {
+  left: 66%;
+  top: 22%;
+}
+.hs-3 {
+  left: 20%;
+  top: 12%;
+}
+.hs-4 {
+  left: 30%;
+  top: 36%;
+}
+.hs-5 {
+  left: 86%;
+  top: 52%;
+}
+.hs-6 {
+  left: 10%;
+  top: 46%;
+}
+.hs-7 {
+  left: 70%;
+  top: 62%;
+}
+.hs-8 {
+  left: 24%;
+  top: 66%;
+}
+
+@media (max-width: 700px) {
+  /* phone: one whole bouquet on each side, side by side, nothing cut off or hidden behind the photo */
+  .hf {
+    height: 33%;
+    bottom: 2%;
+  }
+  .hf-l {
+    left: 0;
+  }
+  .hf-r {
+    right: 0;
+  }
+  .deco-2 {
+    display: none;
+  }
+  .deco-1 {
+    width: 34px;
+    height: 34px;
+  }
+  .hs-5,
+  .hs-6,
+  .hs-8 {
+    display: none;
+  }
+  .hs-1 {
+    left: 80%;
+    top: 12%;
+  }
+  .hs-3 {
+    left: 8%;
+    top: 22%;
+  }
+  .hs-7 {
+    left: 82%;
+    top: 58%;
+  }
+}
+
+/* ---------- Reduced motion: everything stays put ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sparkle,
+  .tp,
+  .hero-photo-inner img {
+    animation: none !important;
+  }
+  .sparkle {
+    opacity: 0.8;
+  }
+  .sticker,
+  .pillar,
+  .skill-card,
+  .cert,
+  .contact-item {
+    transition: none;
+  }
+}
+
+.hero-hi {
+  font-style: italic;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(28, 80, 130, 0.45);
+}
+
+/* ---------- Image accents: a little sea-life picture in the corner of a card ---------- */
+.skill-card,
+.pillar,
+.cert {
+  position: relative;
+  overflow: hidden;
+}
+.card-art {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  width: clamp(84px, 8.5vw, 118px);
+  height: auto;
+  z-index: 0;
+  opacity: 0.95;
+  rotate: -8deg;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 5px rgba(36, 48, 74, 0.2));
+  transition: rotate 0.4s var(--ease-out), scale 0.4s var(--ease-out);
+}
+.skill-card:hover .card-art,
+.pillar:hover .card-art,
+.cert:hover .card-art {
+  rotate: 3deg;
+  scale: 1.08;
+}
+/* keep the text above the picture */
+.skill-card > *:not(.card-art),
+.pillar > *:not(.card-art),
+.cert > *:not(.card-art) {
+  position: relative;
+  z-index: 1;
+}
+.pillar {
+  padding-right: clamp(5.5rem, 10vw, 8rem);
+}
+
+/* Skill chips with an app icon */
+.chip-icon {
+  gap: 0.45rem;
+  padding-left: 0.5rem;
+}
+.skill-icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  object-fit: contain;
+}
+.skill-card .chip {
+  background: rgba(255, 255, 255, 0.92);
+}
+@media (max-width: 600px) {
+  .pillar {
+    padding-right: 5rem;
+  }
+}
+
+/* ==========================================================================
+   ONE LOOK FOR EVERY BOX (this block wins over the rules above)
+   Same see-through fill, same highlight color (outline shadow, tab, photo frame),
+   no matter which section the box is in.
+   ========================================================================== */
+.sticker,
+.skill-card,
+.cert,
+.contact-item,
+.pubs,
+.photo-frame,
+.project-desc {
+  --a: var(--box-hl);
+  --a-tint: var(--box-hl-tint);
+  --a-soft: var(--box-hl-soft);
+  --a-deep: var(--box-hl-deep);
+  background: var(--box-bg);
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+  backdrop-filter: blur(12px) saturate(1.15);
+  box-shadow: 6px 6px 0 var(--box-hl);
+}
+.sticker:hover,
+.skill-card:hover,
+.cert:hover,
+.contact-item:hover,
+.contact-item:focus-within {
+  box-shadow: 10px 10px 0 var(--box-hl);
+}
+.photo-frame {
+  box-shadow: 9px 9px 0 var(--box-hl);
+}
+.cert.secondary {
+  box-shadow: 6px 6px 0 var(--box-hl);
+}
+.project-desc {
+  border: 2.5px solid var(--ink);
+  border-radius: 22px;
+}
+/* everything inside a project shares the same highlight too, whatever its old accent was */
+.project,
+.project-others,
+.desc-block {
+  --a: var(--box-hl);
+  --a-tint: var(--box-hl-tint);
+  --a-soft: var(--box-hl-soft);
+  --a-deep: var(--box-hl-deep);
+}
+/* the slides sit on the box's own see-through fill (pictures and videos still fill it) */
+.slide:not(.slide-image):not(.slide-video) {
+  background: transparent;
+}
+.skill-card .chip,
+.glance-facts > div,
+.flow li {
+  background: var(--box-bg-strong);
+}
+.photo-frame {
+  background: radial-gradient(circle at 50% 34%, rgba(255, 255, 255, 0.7), var(--box-bg) 70%);
+}
+
+/* ==========================================================================
+   NO FRAMES: skills, certificates, publications, contact and the About photo are plain see-through
+   boxes (no sand border, no corner shells). Same in the Projects section.
+   ========================================================================== */
+.skill-card,
+.cert,
+.contact-item,
+.pubs,
+.photo-frame {
+  position: relative;
+  border: 0;
+  border-radius: 16px;
+  --frame-w: 16px;
+  box-shadow: 0 14px 30px -14px rgba(30, 80, 120, 0.4);
+}
+.skill-card:hover,
+.cert:hover,
+.contact-item:hover,
+.contact-item:focus-within {
+  box-shadow: 0 20px 38px -14px rgba(30, 80, 120, 0.5);
+}
+.cert.secondary {
+  border: 0;
+  box-shadow: 0 14px 30px -14px rgba(30, 80, 120, 0.3);
+}
+.contact-item {
+  border-radius: 12px;
+}
+
+/* the old corner pictures on cards stay hidden */
+.card-art {
+  display: none;
+}
+.pubs {
+  padding-block: clamp(1.6rem, 3.5vw, 2.2rem);
+}
+
+/* ---------- Projects: no frame, just a simple see-through blurred box ---------- */
+.sticker,
+.project-desc {
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  border-radius: 22px;
+  box-shadow: 0 16px 34px -18px rgba(30, 80, 120, 0.4);
+}
+.sticker:hover {
+  box-shadow: 0 20px 38px -18px rgba(30, 80, 120, 0.5);
+}
+/* the video label goes back to its normal corner spot */
+.slide-video .slide-caption {
+  left: 0.85rem;
+}
+@media (max-width: 700px) {
+  .slide-video .slide-caption {
+    left: 0.85rem;
+  }
+}

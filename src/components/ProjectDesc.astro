@@ -1,0 +1,41 @@
+---
+/** What sits under a project's carousel: the short description, then the tool boxes and any links. */
+import Icon from './Icon.astro';
+import { hasValue } from '../lib/utils.js';
+
+const { project: p } = Astro.props;
+const links = p.links ?? {};
+const hasLinks = hasValue(links.paper) || hasValue(links.github) || hasValue(links.demo);
+const description = (p.description ?? '').trim();
+const tools = (p.tools ?? []).filter((t) => !t.startsWith('[TO FILL'));
+---
+
+{description && <p class="desc-text">{description}</p>}
+{
+  tools.length > 0 && (
+    <ul class="chip-list desc-tools" aria-label="Tools used">
+      {tools.map((t) => <li class="chip">{t}</li>)}
+    </ul>
+  )
+}
+{
+  hasLinks && (
+    <div class="desc-links">
+      {hasValue(links.paper) && (
+        <a class="btn btn-secondary btn-small" href={links.paper} target="_blank" rel="noopener noreferrer">
+          Paper <Icon name="arrow-up-right" size={16} />
+        </a>
+      )}
+      {hasValue(links.github) && (
+        <a class="btn btn-secondary btn-small" href={links.github} target="_blank" rel="noopener noreferrer">
+          <Icon name="code" size={16} /> GitHub
+        </a>
+      )}
+      {hasValue(links.demo) && (
+        <a class="btn btn-secondary btn-small" href={links.demo} target="_blank" rel="noopener noreferrer">
+          Live demo <Icon name="arrow-up-right" size={16} />
+        </a>
+      )}
+    </div>
+  )
+}

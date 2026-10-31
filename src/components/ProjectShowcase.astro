@@ -1,0 +1,60 @@
+---
+/**
+ * One main project, top to bottom (like the layout sketch):
+ *   project name
+ *   image carousel (slides by itself, and you can also use the arrows, dots, arrow keys or swipe)
+ *   description
+ * Add documentation images as public/images/projects/<project>/1.webp, 2.webp, 3.webp ... (png/jpg also
+ * work), or list them under `slides:` in the project file (with alt text and captions). Until then the
+ * carousel shows text slides built from the project's content.
+ */
+import CarArrow from './CarArrow.astro';
+import ProjectSlides from './ProjectSlides.astro';
+import ProjectDesc from './ProjectDesc.astro';
+import { buildSlides } from '../lib/slides.js';
+
+const { entry } = Astro.props;
+const p = entry.data;
+const id = entry.id;
+const slides = buildSlides(p, id);
+---
+
+<section class="project" id={`project-${id}`} data-accent={p.accent} aria-labelledby={`title-${id}`}>
+  <div class="container project-stack">
+    <header class="project-head" data-reveal>
+      <h3 class="project-name" id={`title-${id}`}>{p.title}</h3>
+      <p class="project-meta">{p.date} · {p.tag}</p>
+    </header>
+
+    <div
+      class="carousel"
+      data-carousel
+      data-autoplay="5200"
+      role="group"
+      aria-roledescription="carousel"
+      aria-label={`${p.shortTitle ?? p.title}: documentation`}
+    >
+      <button class="car-btn car-prev" type="button" data-car-prev aria-label="Previous slide">
+        <CarArrow dir="left" />
+      </button>
+      <div class="car-box sticker" style="--rot: -0.3deg" data-reveal="pop">
+        <div class="slides" data-slides tabindex="0">
+          <ProjectSlides project={p} slides={slides} />
+        </div>
+        <div class="slide-bar">
+          <div class="slide-dots">
+            {slides.map((_, i) => <button class:list={['sdot', { 'is-active': i === 0 }]} type="button" data-slide-dot={i} aria-label={`Go to slide ${i + 1}`} />)}
+          </div>
+          <span class="slide-count" data-slide-count aria-live="off">1 / {slides.length}</span>
+        </div>
+      </div>
+      <button class="car-btn car-next" type="button" data-car-next aria-label="Next slide">
+        <CarArrow dir="right" />
+      </button>
+    </div>
+
+    <div class="project-desc" data-reveal>
+      <ProjectDesc project={p} />
+    </div>
+  </div>
+</section>

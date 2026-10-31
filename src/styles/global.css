@@ -1,0 +1,341 @@
+/* ==========================================================================
+   GLOBAL STYLES — reset, typography, buttons, chips, reveal states.
+   Section-specific styles live in sections.css.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: clip; /* nothing may make the page scroll sideways (the hero photo is wider than a phone) */
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--nav-h) + 12px);
+}
+
+body {
+  margin: 0;
+  background-color: var(--page-bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip; /* "clip" (not "hidden") so sticky elements keep working */
+  transition: background-color 0.9s ease;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--sky-deep);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -80px;
+  z-index: 100;
+  background: var(--ink);
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border-radius: var(--pill);
+  text-decoration: none;
+  font-weight: 700;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Lenis (smooth scroll) required rules ---------- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ---------- Layout helpers ---------- */
+.container {
+  width: min(100% - 2 * var(--gutter), var(--maxw));
+  margin-inline: auto;
+}
+
+.chapter {
+  --chapter-pad: clamp(2rem, 4vw, 3rem);
+  position: relative;
+  padding-block: var(--chapter-pad);
+  /* when a link jumps here without the smooth-scroll script, put the heading (not the empty padding) just under the nav */
+  scroll-margin-top: calc(22px - var(--chapter-pad));
+}
+
+.chapter-head {
+  max-width: 46rem;
+  margin-bottom: clamp(1.5rem, 3.5vw, 2.25rem);
+}
+
+.eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--a-deep, var(--muted));
+  margin-bottom: 1rem;
+}
+
+.chapter-title {
+  font-size: clamp(2.6rem, 6.4vw, 4.5rem);
+  line-height: 1.04;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.chapter-lede {
+  margin-top: 1.25rem;
+  font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+  color: var(--muted);
+  max-width: 40rem;
+  text-wrap: pretty;
+}
+
+.subhead {
+  font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+/* ---------- Highlighter underline (the signature detail) ---------- */
+.hl {
+  position: relative;
+  display: inline-block;
+  z-index: 0;
+  --hl: 1;
+  --hlc: var(--a, var(--sky));
+}
+.hl::after {
+  content: '';
+  position: absolute;
+  left: -0.06em;
+  right: -0.06em;
+  bottom: 0.06em;
+  height: 0.36em;
+  background: var(--hlc);
+  opacity: 0.55;
+  border-radius: 0.2em;
+  z-index: -1;
+  transform: scaleX(var(--hl));
+  transform-origin: left center;
+}
+.hl-sky {
+  --hlc: var(--sky);
+}
+.hl-aqua {
+  --hlc: var(--aqua);
+}
+.hl-shore {
+  --hlc: var(--shore);
+}
+.hl-dusk {
+  --hlc: var(--dusk);
+}
+
+/* ---------- Buttons & chips ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--pill);
+  border: 1.5px solid transparent;
+  font-weight: 700;
+  font-size: 0.98rem;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out),
+    background-color 0.2s, border-color 0.2s;
+}
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-soft);
+}
+.btn:active {
+  transform: translateY(-1px);
+}
+.btn-primary {
+  background: var(--ink);
+  color: #fff;
+}
+.btn-secondary {
+  background: var(--white);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.btn-small {
+  min-height: 40px;
+  padding: 0.4rem 1.05rem;
+  font-size: 0.9rem;
+}
+.btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.icon {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.85rem;
+  border-radius: var(--pill);
+  background: var(--white);
+  border: 1px solid var(--line);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+.chip-tint {
+  background: var(--a-soft, var(--a-tint));
+  border-color: transparent;
+  color: var(--a-deep);
+}
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---------- "Fill me in" markers (see: npm run check) ---------- */
+.todo {
+  background: #fff1b8;
+  color: #6b4a00;
+  border: 1px dashed #d4a017;
+  border-radius: 6px;
+  padding: 0 0.3em;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.92em;
+}
+
+.dev-hint {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6b4a00;
+  background: #fff1b8;
+  border: 1px dashed #d4a017;
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  margin-top: 0.75rem;
+}
+
+/* ---------- Scroll reveal start states ----------
+   Content is only hidden when JavaScript is running (html.js). If JS fails,
+   a safety timer removes "js" and everything shows. */
+.js [data-hero] {
+  opacity: 0;
+}
+.js [data-reveal]:not(.is-in) {
+  opacity: 0;
+  transform: translateY(28px);
+}
+.js [data-reveal='pop']:not(.is-in) {
+  transform: scale(0.92);
+}
+.js .hl {
+  --hl: 0;
+}
+
+/* ---------- Reduced motion: show everything, no movement ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  body {
+    transition: none;
+  }
+  .js [data-reveal]:not(.is-in),
+  .js [data-reveal='pop']:not(.is-in),
+  .js [data-hero] {
+    opacity: 1;
+    transform: none;
+  }
+  .js .hl {
+    --hl: 1;
+  }
+  .btn,
+  .btn:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+#skills {
+  scroll-margin-top: 16px; /* same idea as .chapter: a plain link jump should not hide the heading */
+}

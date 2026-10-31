@@ -1,0 +1,83 @@
+---
+/**
+ * "Other projects": same layout as the main projects (name, carousel, description), but here the
+ * carousel slides through ALL the other projects with the left / right arrows. The name and the
+ * description under it change to match the project of the slide you are looking at (see ui.js).
+ */
+import CarArrow from './CarArrow.astro';
+import ProjectSlides from './ProjectSlides.astro';
+import ProjectDesc from './ProjectDesc.astro';
+import { buildSlides } from '../lib/slides.js';
+
+const { entries = [] } = Astro.props;
+const groups = entries.map((e, i) => ({ entry: e, i, slides: buildSlides(e.data, e.id) }));
+const first = entries[0]?.data;
+const total = groups.reduce((n, g) => n + g.slides.length, 0);
+---
+
+{
+  first && (
+    <section
+      class="project project-others"
+      id="more-projects"
+      data-accent={first.accent}
+      data-others
+      aria-label="Other projects"
+    >
+      <div class="container project-stack">
+        <h3 class="subhead others-label" data-reveal>
+          Other <span class="hl">projects</span>
+        </h3>
+
+        <header class="project-head">
+          <h3 class="project-name" data-sync-title>{first.title}</h3>
+          <p class="project-meta" data-sync-meta>{first.date} · {first.tag}</p>
+        </header>
+
+        <div
+          class="carousel"
+          data-carousel
+          data-sync
+          role="group"
+          aria-roledescription="carousel"
+          aria-label="Other projects: documentation"
+        >
+          <button class="car-btn car-prev" type="button" data-car-prev aria-label="Previous slide">
+            <CarArrow dir="left" />
+          </button>
+          <div class="car-box sticker" style="--rot: -0.3deg" data-reveal="pop">
+            <div class="slides" data-slides tabindex="0">
+              {groups.map((g) => <ProjectSlides project={g.entry.data} slides={g.slides} index={g.i} />)}
+            </div>
+            <div class="slide-bar">
+              <div class="slide-dots">
+                {Array.from({ length: total }).map((_, i) => <button class:list={['sdot', { 'is-active': i === 0 }]} type="button" data-slide-dot={i} aria-label={`Go to slide ${i + 1}`} />)}
+              </div>
+              <span class="slide-count" data-slide-count aria-live="off">1 / {total}</span>
+            </div>
+          </div>
+          <button class="car-btn car-next" type="button" data-car-next aria-label="Next slide">
+            <CarArrow dir="right" />
+          </button>
+        </div>
+
+        <div class="project-desc" data-sync-desc>
+          {
+            groups.map((g) => (
+              <div
+                class="desc-block"
+                data-project={g.i}
+                data-title={g.entry.data.title}
+                data-meta={`${g.entry.data.date} · ${g.entry.data.tag}`}
+                data-accent={g.entry.data.accent}
+                hidden={g.i > 0}
+              >
+                <ProjectDesc project={g.entry.data} />
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  )
+}

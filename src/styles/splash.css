@@ -1,0 +1,336 @@
+/* ==========================================================================
+   SPLASH: "Rindi Indah Lestari / Present" (markup: components/Splash.astro, behavior: scripts/splash.js)
+   Hidden unless <html class="has-splash"> is set. Built to be light: everything that moves here is
+   opacity / transform only, so the browser animates it on the graphics card without repainting.
+   ========================================================================== */
+/* Canva's "Daydream" cannot be downloaded from Canva. If you own a licence for it, put the web font at
+   public/fonts/daydream.woff2 and uncomment this: it then replaces the stand-in script font (Great Vibes).
+@font-face {
+  font-family: 'Daydream';
+  src: url('/fonts/daydream.woff2') format('woff2');
+  font-display: swap;
+}
+*/
+.splash {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  color: #fff;
+}
+.has-splash .splash {
+  display: block;
+}
+.splash-sheet {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* the water, from shallow turquoise at the top to deeper blue below */
+  background: linear-gradient(180deg, #2c82b8 0%, #1c6ca4 55%, #124f84 100%);
+  will-change: transform;
+}
+/* a brighter copy of the water that fades in (this is how the water "brightens" without repainting a gradient) */
+.splash-light {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #8fd8ee 0%, #5fb9e0 55%, #3d95cc 100%);
+  opacity: 0;
+}
+
+/* moving caustic light: one tiled picture slid sideways on the graphics card */
+.splash-caustic {
+  position: absolute;
+  top: -520px;
+  left: -520px;
+  right: 0;
+  bottom: 0;
+  background: url('/images/background/caustics.webp') 0 0 / 520px 520px repeat;
+  opacity: 0.2;
+  animation: splash-caustic 36s linear infinite;
+}
+@keyframes splash-caustic {
+  to {
+    transform: translate3d(520px, 520px, 0);
+  }
+}
+
+/* light rays */
+.splash-rays {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+.splash-rays i {
+  position: absolute;
+  top: -12%;
+  height: 130%;
+  background: linear-gradient(180deg, rgba(225, 247, 255, 0.5), rgba(225, 247, 255, 0) 80%);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 45%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 45%, transparent);
+  transform-origin: 50% 0;
+  transform: rotate(var(--r));
+  animation: splash-ray 7s ease-in-out infinite alternate;
+}
+@keyframes splash-ray {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.splash-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* seabed: plain pictures, grass swaying on the graphics card */
+.splash-floor {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 26vh;
+  opacity: 0;
+  pointer-events: none;
+}
+.splash-floor::before {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 55%;
+  background: linear-gradient(180deg, rgba(222, 202, 156, 0), rgba(214, 192, 142, 0.55));
+}
+.fl {
+  position: absolute;
+  bottom: -2vh;
+  height: auto;
+}
+.fl-g1,
+.fl-g2,
+.fl-g3 {
+  transform-origin: 50% 100%;
+  animation: splash-sway 6s ease-in-out infinite alternate;
+}
+.fl-g1 {
+  left: -3vw;
+  width: clamp(170px, 24vw, 340px);
+}
+.fl-g2 {
+  left: 30vw;
+  width: clamp(100px, 13vw, 190px);
+  animation-delay: -2s;
+}
+.fl-g3 {
+  right: -4vw;
+  width: clamp(170px, 24vw, 340px);
+  scale: -1 1;
+  animation-delay: -4s;
+}
+.fl-s1 {
+  left: 14vw;
+  width: clamp(48px, 6vw, 86px);
+  bottom: -0.5vh;
+  rotate: -12deg;
+}
+.fl-s2 {
+  left: 58vw;
+  width: clamp(48px, 6vw, 88px);
+  bottom: 0;
+}
+.fl-s3 {
+  right: 20vw;
+  width: clamp(48px, 6vw, 84px);
+  bottom: -0.5vh;
+  rotate: 14deg;
+}
+@keyframes splash-sway {
+  from {
+    transform: rotate(-1.6deg);
+  }
+  to {
+    transform: rotate(1.8deg);
+  }
+}
+
+/* ---------- Title ---------- */
+.splash-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: clamp(0.7rem, 2vw, 1.3rem);
+  padding: 0 var(--gutter);
+  text-align: center;
+  pointer-events: none;
+}
+.splash-title {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.3em;
+  margin: 0;
+  /* the name is set in a script face: Daydream (see tokens.css --font-name) */
+  font-family: var(--font-name);
+  font-size: clamp(3.2rem, 11vw, 8.5rem);
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.04;
+  letter-spacing: 0;
+  color: #fbfeff;
+  /* one soft shadow for the whole title (a shadow on each letter would be cut into boxes by the letter masks) */
+  filter: drop-shadow(0 4px 16px rgba(8, 50, 96, 0.45));
+}
+.sw {
+  display: inline-flex;
+}
+.sl {
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.2em 0.12em 0.3em; /* room for the script's tall loops and tails inside the mask */
+  margin: -0.2em -0.12em -0.3em;
+}
+.sl-in {
+  display: inline-block;
+}
+/* The letters are hidden from the very first paint (otherwise the title would flash on screen for a moment before
+   the script loads). Only opacity is set here: the slide-up is owned by splash.js (GSAP). Setting a transform here
+   too makes GSAP add its own movement on top of it, and the letters end up stuck below their masks. */
+.has-splash .sl-in {
+  opacity: 0;
+}
+/* the last word is tinted sky blue (plain color, so it keeps the title's soft shadow) */
+.sw-blue .sl-in {
+  color: #c9ecff;
+}
+.splash-by {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.7rem, 2vw, 1.3rem);
+  margin: 0;
+  font-size: clamp(1rem, 0.8rem + 1vw, 1.55rem);
+  letter-spacing: 0.3em;
+  color: #e4f6ff;
+  text-shadow: 0 2px 16px rgba(8, 50, 96, 0.5);
+  opacity: 0;
+}
+.by-text {
+  font-style: italic;
+  white-space: nowrap;
+}
+.by-line {
+  display: block;
+  height: 1px;
+  width: clamp(34px, 8vw, 110px);
+  background: linear-gradient(90deg, transparent, rgba(220, 244, 255, 0.9));
+  transform: scaleX(0);
+  transform-origin: right center;
+}
+.by-line-r {
+  background: linear-gradient(270deg, transparent, rgba(220, 244, 255, 0.9));
+  transform-origin: left center;
+}
+.splash-spark {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  fill: #fff;
+  opacity: 0;
+  filter: drop-shadow(0 0 6px #fff);
+}
+.sp-a {
+  left: 24%;
+  top: 34%;
+}
+.sp-b {
+  right: 22%;
+  top: 41%;
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Enter button ---------- */
+.splash-skip {
+  position: absolute;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1.15rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: var(--pill);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0;
+  transition: background-color 0.2s;
+}
+.splash-skip:hover {
+  background: rgba(255, 255, 255, 0.34);
+}
+.splash-skip svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- The surface: foam edge riding on top of the draining water ---------- */
+.splash-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 56px;
+  pointer-events: none;
+  overflow: hidden;
+  will-change: transform;
+}
+.splash-edge i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 100%;
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+}
+.edge-a {
+  background-size: 1200px 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 56' preserveAspectRatio='none'%3E%3Cpath fill='%238fd8ee' d='M0,32 C150,10 300,10 450,32 S750,54 900,32 S1050,14 1200,32 V56 H0Z'/%3E%3Cpath fill='none' stroke='%23ffffff' stroke-opacity='.9' stroke-width='3' d='M0,32 C150,10 300,10 450,32 S750,54 900,32 S1050,14 1200,32'/%3E%3C/svg%3E");
+  animation: edge-slide 6s linear infinite;
+}
+@keyframes edge-slide {
+  to {
+    background-position-x: -1200px;
+  }
+}
+
+/* page is locked while the splash plays */
+html.splash-lock,
+html.splash-lock body {
+  overflow: hidden;
+}
+
+@media (max-width: 700px) {
+  .sp-a {
+    left: 10%;
+  }
+  .sp-b {
+    right: 8%;
+  }
+  .splash-skip {
+    padding: 0.42rem 0.95rem;
+  }
+  .splash-rays i:nth-child(n + 4) {
+    display: none;
+  }
+}

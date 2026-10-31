@@ -1,0 +1,8 @@
+---
+/** The big arrow-head used for the left / right carousel buttons (a notched triangle, like the layout sketch). */
+const { dir = 'right' } = Astro.props;
+---
+
+<svg class:list={['car-arrow', dir]} viewBox="0 0 48 56" aria-hidden="true" focusable="false">
+  <path d="M0 28 44 0C31 14 31 42 44 56Z"></path>
+</svg>

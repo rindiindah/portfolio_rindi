@@ -1,0 +1,177 @@
+---
+/**
+ * Animated ocean, fixed behind the whole page (styles/sea.css + scripts/sea.js).
+ * Purely decorative, hidden from screen readers. Reading the page is a dive:
+ *   top of the page  = sky, clouds and the horizon
+ *   scrolling down   = under the surface: turquoise water, drifting caustic light, rays,
+ *                      swimming fish you can feed by clicking the water, bubbles
+ *   end of the page  = a sandy beach with your shells and starfish, and foam washing in.
+ * Art comes from public/images/background/ (cut-outs of your shell files, plus a generated
+ * caustic-light texture). Waves, clouds, fish and the beach are drawn in code.
+ */
+
+// Shells and starfish drifting past under water. `at` = how far down the page (0 to 1) the item
+// is centered, `depth` = parallax speed (smaller = farther away, slower), `x` = left edge in vw.
+const life = [
+  { img: 'starfish', x: 90, at: 0.12, depth: 0.22, rot: 18, flip: 1 },
+  { img: 'scallop', x: -3, at: 0.26, depth: 0.3, rot: -12, flip: 1 },
+  { img: 'conch', x: 86, at: 0.4, depth: 0.26, rot: 22, flip: 1 },
+  { img: 'pearl', x: 1, at: 0.54, depth: 0.34, rot: -8, flip: -1 },
+  { img: 'reef', x: 88, at: 0.68, depth: 0.28, rot: 6, flip: -1 },
+  { img: 'shells', x: -2, at: 0.8, depth: 0.3, rot: 14, flip: 1 },
+];
+
+// Small, slow bubbles. Fixed values (not random) so the build is repeatable.
+const bubbles = Array.from({ length: 14 }, (_, i) => {
+  const t = 28 + ((i * 5) % 22);
+  return {
+    x: ((i * 53) % 92) + 4,
+    size: 8 + ((i * 7) % 20),
+    t,
+    delay: -((i * 3.7) % t),
+    sway: (i % 2 ? 1 : -1) * (10 + ((i * 3) % 24)),
+  };
+});
+
+// Fish that swim around on their own and swim to food when you click the water (see sea.js).
+// w = width in px; the height follows the picture.
+const pets = [
+  { img: 'goldfish', w: 128, h: 67 },
+  { img: 'silver-1', w: 104, h: 33 },
+  { img: 'goldfish', w: 88, h: 46 },
+  { img: 'silver-2', w: 92, h: 39 },
+  { img: 'silver-1', w: 78, h: 25 },
+];
+
+// Sun glitter on the water near the horizon
+const glints = Array.from({ length: 16 }, (_, i) => ({
+  x: ((i * 61) % 94) + 3,
+  y: ((i * 29) % 80) + 8,
+  s: 3 + (i % 3),
+  d: (i * 0.37) % 3,
+}));
+
+// Soft volumetric clouds (rendered sprites), drifting at different heights and speeds.
+const clouds = [
+  { img: 'cloud-1', y: 4, w: 34, t: 190, d: -30, o: 0.95 },
+  { img: 'cloud-2', y: 20, w: 26, t: 240, d: -140, o: 0.8 },
+  { img: 'cloud-3', y: 2, w: 22, t: 160, d: -90, o: 0.7 },
+  { img: 'cloud-2', y: 30, w: 30, t: 300, d: -210, o: 0.55 },
+  { img: 'cloud-1', y: 12, w: 18, t: 260, d: -60, o: 0.5 },
+];
+
+const beachShells = [
+  { img: 'scallop', l: '3%', b: '14%', w: 120, r: -10 },
+  { img: 'starfish', l: '30%', b: '8%', w: 110, r: 14 },
+  { img: 'pearl', l: '52%', b: '22%', w: 100, r: -6 },
+  { img: 'reef', l: '72%', b: '12%', w: 130, r: 4 },
+  { img: 'conch', l: '90%', b: '26%', w: 84, r: 18 },
+];
+---
+
+<div class="sea" data-sea aria-hidden="true">
+  <div class="sea-water"></div>
+  <div class="caustic caustic-a"></div>
+  <div class="caustic caustic-b"></div>
+
+  <div class="sea-rays">
+    <i class="ray" style="--x: 6vw; --r: 14deg; --w: 16vw; --t: 17s; --d: 0s"></i>
+    <i class="ray" style="--x: 36vw; --r: 11deg; --w: 22vw; --t: 23s; --d: -9s"></i>
+    <i class="ray" style="--x: 70vw; --r: 15deg; --w: 14vw; --t: 19s; --d: -4s"></i>
+  </div>
+
+  <div class="sea-life">
+    {
+      life.map((l) => (
+        <div class="life" data-depth={l.depth} data-at={l.at} style={`--x: ${l.x}vw`}>
+          <img
+            class="life-img"
+            src={`/images/background/${l.img}.webp`}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            style={`--rot: ${l.rot}deg; --flip: ${l.flip}`}
+          />
+        </div>
+      ))
+    }
+  </div>
+
+  <!-- Swimming fish, and the food + ripples from your clicks -->
+  <div class="sea-pets" data-pets>
+    {
+      pets.map((f) => (
+        <div class="pet" data-pet data-w={f.w} style={`width: ${f.w}px`}>
+          <div class="pet-body">
+            <img src={`/images/background/${f.img}.webp`} alt="" width={f.w} height={f.h} decoding="async" />
+          </div>
+        </div>
+      ))
+    }
+  </div>
+  <div class="sea-food" data-feed></div>
+
+  <!-- Seagrass swaying near the sea floor (fades in as you dive) -->
+  <div class="sea-grass">
+    <img class="grass g-1" src="/images/background/grass-1.webp" alt="" width="700" height="470" loading="lazy" decoding="async" />
+    <img class="grass g-2" src="/images/background/grass-2.webp" alt="" width="560" height="530" loading="lazy" decoding="async" />
+    <img class="grass g-3" src="/images/background/grass-1.webp" alt="" width="700" height="470" loading="lazy" decoding="async" />
+  </div>
+
+  <!-- Sky + horizon: scrolls away as you dive -->
+  <div class="sea-sky">
+    <div class="sky-grad"></div>
+    <div class="sky-sun"></div>
+    {
+      clouds.map((c) => (
+        <i
+          class="cloud"
+          style={`--y: ${c.y}%; --w: ${c.w}vw; --t: ${c.t}s; --d: ${c.d}s; --o: ${c.o}; background-image: url(/images/background/${c.img}.webp)`}
+        />
+      ))
+    }
+    <div class="sky-haze"></div>
+    <div class="horizon">
+      <div class="hz hz-1"><div class="hz-tile"></div></div>
+      <div class="hz hz-2"><div class="hz-tile"></div></div>
+      <div class="hz hz-3"><div class="hz-tile"></div></div>
+    </div>
+    <div class="glints">
+      {glints.map((g) => <i style={`left: ${g.x}%; top: ${g.y}%; --s: ${g.s}px; animation-delay: ${g.d}s`} />)}
+    </div>
+  </div>
+
+  <div class="sea-bubbles">
+    {
+      bubbles.map((b) => (
+        <i
+          class="bubble"
+          style={`--x: ${b.x}%; --s: ${b.size}px; --t: ${b.t}s; --d: ${b.delay}s; --w: ${b.sway}px`}
+        />
+      ))
+    }
+  </div>
+
+  <!-- The beach: rises in at the very end of the page -->
+  <div class="sea-beach">
+    <div class="sand"></div>
+    <div class="wet"></div>
+    <div class="wash wash-1"><div class="wash-tile"></div></div>
+    <div class="wash wash-2"><div class="wash-tile"></div></div>
+    <div class="wash wash-3"><div class="wash-tile"></div></div>
+    {
+      beachShells.map((s) => (
+        <img
+          class="beach-shell"
+          src={`/images/background/${s.img}.webp`}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          style={`left: ${s.l}; bottom: ${s.b}; width: ${s.w}px; rotate: ${s.r}deg`}
+        />
+      ))
+    }
+  </div>
+
+  <div class="sea-tint"></div>
+</div>

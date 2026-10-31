@@ -1,0 +1,60 @@
+{
+  "items": [
+    {
+      "id": "bnsp",
+      "icon": "shield-check",
+      "title": "Certified Data Scientist",
+      "issuer": "Badan Nasional Sertifikasi Profesi (BNSP)",
+      "issuerNote": "Indonesia's National Professional Certification Agency",
+      "year": "2026",
+      "validity": "Valid June 2026 – June 2029",
+      "description": "",
+      "preview": "/images/certs/bnsp-thumb.webp",
+      "pages": ["/images/certs/bnsp-p1.webp", "/images/certs/bnsp-p2.webp"],
+      "file": "",
+      "verifyUrl": "",
+      "secondary": false
+    },
+    {
+      "id": "hki-pakisaji",
+      "icon": "award",
+      "title": "HKI: Pakisaji Farm, AI-Based Sheep Weight Prediction Website",
+      "year": "2026",
+      "validity": "",
+      "description": "Registered intellectual property for an AI-based sheep weight prediction website, registration number 001320996",
+      "preview": "/images/certs/hki-pakisaji-thumb.webp",
+      "pages": ["/images/certs/hki-pakisaji-p1.webp", "/images/certs/hki-pakisaji-p2.webp"],
+      "file": "",
+      "verifyUrl": "",
+      "secondary": false
+    },
+    {
+      "id": "hki-magot",
+      "icon": "award",
+      "title": "HKI: Magot Chain, AI-Based Feed Supply Chain Digitalization Website",
+      "year": "2026",
+      "validity": "",
+      "description": "Registered intellectual property for an AI-based feed supply chain digitalization website. Registration number 001320994.",
+      "preview": "/images/certs/hki-magot-thumb.webp",
+      "pages": ["/images/certs/hki-magot-p1.webp", "/images/certs/hki-magot-p2.webp"],
+      "file": "",
+      "verifyUrl": "",
+      "secondary": false
+    },
+    {
+      "id": "english",
+      "icon": "book-open",
+      "title": "English Proficiency Test",
+      "issuer": "Telkom University Language Center",
+      "issuerNote": "",
+      "year": "2025",
+      "validity": "Valid until October 2027",
+      "description": "EPrT (English Proficiency Test) total score 510: Listening 56, Grammar 48, Reading 49.",
+      "preview": "/images/certs/english-thumb.webp",
+      "pages": ["/images/certs/english-p1.webp", "/images/certs/english-p2.webp"],
+      "file": "",
+      "verifyUrl": "",
+      "secondary": true
+    }
+  ]
+}

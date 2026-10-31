@@ -1,0 +1,192 @@
+/* ==========================================================================
+   DECORATION: the twinkling sparkles beside section titles, and the first screen
+   (tulip bouquets, floating photo, sparkles). There are no decorative boxes or frames on this site:
+   structure comes from spacing, hairline dividers and type (see sections.css).
+   ========================================================================== */
+
+/* ---------- Sparkles: small twinkling star-like glows ---------- */
+.sparkle {
+  --sp: #bfe3ff;
+  fill: #fff;
+  stroke: var(--sp);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 9px var(--sp));
+  animation: twinkle 3.2s ease-in-out infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.45) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05) rotate(45deg);
+  }
+}
+
+/* Next to the big chapter titles */
+.chapter-head {
+  position: relative;
+}
+.deco {
+  position: absolute;
+}
+.deco-1 {
+  top: -0.2rem;
+  right: 0;
+}
+.deco-2 {
+  top: 2.8rem;
+  right: 4.2rem;
+}
+
+/* ---------- Hero: bouquets, floating photo, sparkles ---------- */
+.hero-flowers {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.hf {
+  position: absolute;
+  bottom: -4%;
+  height: 64%;
+  width: auto;
+  max-width: none;
+  transform-origin: 50% 100%;
+  animation: sway 7s ease-in-out infinite alternate;
+  -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+}
+.hf-l {
+  left: -3%;
+}
+.hf-r {
+  right: -3%;
+  scale: -1 1; /* mirrored, so the two sides match */
+  animation-delay: -3s;
+}
+@keyframes sway {
+  from {
+    transform: rotate(-1.2deg);
+  }
+  to {
+    transform: rotate(1.4deg);
+  }
+}
+
+/* ---------- Hero: floating photo + sparkles ---------- */
+.hero-photo-inner img {
+  animation: float-photo 6.5s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes float-photo {
+  from {
+    transform: translate3d(0, 6px, 0) rotate(-1.1deg);
+  }
+  to {
+    transform: translate3d(0, -14px, 0) rotate(1.1deg);
+  }
+}
+.hero-sparkles {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.hs {
+  position: absolute;
+}
+.hs-1 {
+  left: 78%;
+  top: 8%;
+}
+.hs-2 {
+  left: 66%;
+  top: 22%;
+}
+.hs-3 {
+  left: 20%;
+  top: 12%;
+}
+.hs-4 {
+  left: 30%;
+  top: 36%;
+}
+.hs-5 {
+  left: 86%;
+  top: 52%;
+}
+.hs-6 {
+  left: 10%;
+  top: 46%;
+}
+.hs-7 {
+  left: 70%;
+  top: 62%;
+}
+.hs-8 {
+  left: 24%;
+  top: 66%;
+}
+
+@media (max-width: 700px) {
+  /* phone: one whole bouquet on each side, side by side, nothing cut off or hidden behind the photo */
+  .hf {
+    height: 33%;
+    bottom: 2%;
+  }
+  .hf-l {
+    left: 0;
+  }
+  .hf-r {
+    right: 0;
+  }
+  .deco-2 {
+    display: none;
+  }
+  .deco-1 {
+    width: 34px;
+    height: 34px;
+  }
+  .hs-5,
+  .hs-6,
+  .hs-8 {
+    display: none;
+  }
+  .hs-1 {
+    left: 80%;
+    top: 12%;
+  }
+  .hs-3 {
+    left: 8%;
+    top: 22%;
+  }
+  .hs-7 {
+    left: 82%;
+    top: 58%;
+  }
+}
+
+/* ---------- Reduced motion: everything stays put ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sparkle,
+  .tp,
+  .hero-photo-inner img {
+    animation: none !important;
+  }
+  .sparkle {
+    opacity: 0.8;
+  }
+}
+
+.hero-hi {
+  font-style: italic;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(28, 80, 130, 0.45);
+}

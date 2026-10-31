@@ -1,0 +1,176 @@
+---
+import Icon from './Icon.astro';
+import Sparkle from './Sparkle.astro';
+import publications from '../data/publications.json';
+import certificates from '../data/certificates.json';
+import { fmt, existsPublic, fileType, hasValue } from '../lib/utils.js';
+
+const pubs = publications.items;
+const certs = certificates.items;
+const certArt = ['pearl', 'scallop', 'reef', 'grass-2'];
+const shortDoi = (u) => u.replace(/^https?:\/\//, '');
+---
+
+<section
+  id="achievements"
+  class="chapter achievements"
+  data-chapter="achievements"
+  data-tint="#E1F4F5"
+  data-accent="aqua"
+>
+  <div class="container">
+    <header class="chapter-head" data-reveal>
+      <Sparkle size={44} class="deco deco-1" />
+      <Sparkle size={24} class="deco deco-2" delay={1.1} />
+      <p class="eyebrow">Achievements</p>
+      <h2 class="chapter-title">What I've <span class="hl">achieved</span></h2>
+      <p class="chapter-lede">
+        I’ve published several research papers and registered intellectual property.
+      </p>
+    </header>
+
+    <!-- Research & publications -->
+    <div class="block">
+      <h3 class="subhead" data-reveal>Research &amp; publications</h3>
+      <p class="focus-line" data-reveal>{publications.focus}</p>
+
+      <ol class="pubs">
+        {
+          pubs.map((p) => (
+            <li class="pub" data-reveal>
+              <span class="pub-year">{p.year}</span>
+              <div class="pub-main">
+                <h4 class="pub-title">
+                  <a href={p.doi} target="_blank" rel="noopener noreferrer" title={p.conference}>
+                    {p.title}
+                  </a>
+                </h4>
+                <p class="pub-meta">
+                  <span class="pub-role">{p.role}</span>
+                  <span class="pub-venue" title={p.conference}>
+                    {p.venue}
+                    {p.publisher ? ` · ${p.publisher}` : ''}
+                  </span>
+                  {p.tags.map((t) => <span class="chip chip-tint pub-tag">{t}</span>)}
+                </p>
+              </div>
+              <div class="pub-links">
+                <a class="pub-link" href={p.doi} target="_blank" rel="noopener noreferrer" aria-label={`${p.linkLabel ?? 'DOI'}: ${shortDoi(p.doi)}`}>
+                  <span>{p.linkLabel ?? 'DOI'}</span>
+                  <Icon name="arrow-up-right" size={14} />
+                </a>
+                {p.project && (
+                  <a class="pub-link pub-link-project" href={`#project-${p.project}`}>
+                    <span>Project</span>
+                    <Icon name="arrow-right" size={14} />
+                  </a>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <!-- Certifications & IP -->
+    <div class="block">
+      <h3 class="subhead" data-reveal>Certifications &amp; IP</h3>
+      <div class="certs">
+        {
+          certs.map((c, i) => {
+            const has = existsPublic(c.file);
+            return (
+              <article class:list={['cert', { secondary: c.secondary }]} data-reveal="pop">
+                <div class="cert-icon">
+                  <Icon name={c.icon} size={22} />
+                </div>
+                <div class="cert-body">
+                  <p class="cert-year">
+                    {c.year}
+                    {c.validity ? ` · ${c.validity}` : ''}
+                  </p>
+                  <h4 class="cert-title">{c.title}</h4>
+                  <p class="cert-issuer">{c.issuer}</p>
+                  {c.issuerNote && <p class="cert-note">{c.issuerNote}</p>}
+                  <p class="cert-desc" set:html={fmt(c.description)} />
+                </div>
+                <img class="card-art" src={`/images/background/${certArt[i % certArt.length]}.webp`} alt="" loading="lazy" decoding="async" />
+              {c.pages && (
+                <button
+                  class="cert-preview"
+                  type="button"
+                  data-open-credential
+                  data-pages={JSON.stringify(c.pages)}
+                  data-title={c.title}
+                  aria-label={`Open ${c.title} in full size`}
+                >
+                  <img src={c.preview} alt={`Preview of the certificate: ${c.title}`} loading="lazy" decoding="async" />
+                  <span class="cert-preview-hint">View</span>
+                </button>
+              )}
+              <div class="cert-actions">
+                  {has && (
+                    <button
+                      class="btn btn-secondary btn-small"
+                      type="button"
+                      data-open-credential
+                      data-file={c.file}
+                      data-type={fileType(c.file)}
+                      data-title={c.title}
+                      data-verify={c.verifyUrl}
+                    >
+                      <Icon name="file" size={16} />
+                      View credential
+                    </button>
+                  )}
+                  {hasValue(c.verifyUrl) && (
+                    <a class="btn btn-secondary btn-small" href={c.verifyUrl} target="_blank" rel="noopener noreferrer">
+                      Verify online
+                      <Icon name="arrow-up-right" size={16} />
+                    </a>
+                  )}
+                </div>
+              </article>
+            );
+          })
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Credential viewer (opens from "View credential") -->
+  <dialog class="modal" id="credential-modal" aria-labelledby="credential-title" data-lenis-prevent>
+    <div class="modal-card">
+      <header class="modal-head">
+        <h3 id="credential-title" class="modal-title">Credential</h3>
+        <button class="modal-close" type="button" aria-label="Close" data-close-credential>
+          <Icon name="x" size={20} />
+        </button>
+      </header>
+      <div class="modal-body" data-credential-body></div>
+      <footer class="modal-foot">
+        <a
+          class="btn btn-secondary btn-small"
+          data-credential-open
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open in new tab
+          <Icon name="external-link" size={16} />
+        </a>
+        <a
+          class="btn btn-secondary btn-small"
+          data-credential-verify
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          hidden
+        >
+          Verify online
+          <Icon name="arrow-up-right" size={16} />
+        </a>
+      </footer>
+    </div>
+  </dialog>
+</section>

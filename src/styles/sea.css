@@ -1,0 +1,584 @@
+/* ==========================================================================
+   SEA BACKGROUND: a fixed, illustrated ocean behind the page.
+   Everything is slow and soft, and sits behind the content (z-index -1). Scroll-driven
+   values come from sea.js:
+     --p   scroll progress, 0 (top) to 1 (bottom of the page)
+     --sy  scroll position in px (unitless number)
+   The sky scrolls away as you "dive"; the beach rises in at the end.
+   Colors are a calm turquoise so text on top stays readable (the --muted text color is
+   dark enough for this background).
+   ========================================================================== */
+.sea {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint style;
+  background: #8fd8e8;
+  --p: 0;
+  --sy: 0;
+}
+.sea > * {
+  position: absolute;
+}
+
+/* ---------- Water ---------- */
+.sea-water {
+  inset: 0;
+  background: linear-gradient(180deg, #a3e1ec 0%, #8dd7e8 38%, #72c4e0 74%, #5cb1d8 100%);
+}
+.sea-water::after {
+  /* gets a little deeper as you scroll */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(40, 125, 180, 0) 0%, rgba(40, 125, 180, 0.3) 100%);
+  opacity: calc(var(--p) * 1.1);
+}
+
+/* ---------- Caustics: sunlight networks drifting across the water ----------
+   The layer is wider than the screen by two tiles and slides by exactly one tile, so the loop is seamless. */
+.caustic {
+  top: calc(var(--ct) * -1);
+  left: calc(var(--ct) * -1);
+  width: calc(100% + var(--ct) * 2);
+  height: calc(100% + var(--ct) * 2);
+  background: url('/images/background/caustics.webp') 0 0 / var(--ct) var(--ct) repeat;
+  will-change: transform;
+}
+.caustic-a {
+  --ct: 520px;
+  opacity: 0.34;
+  animation: caustic-a 52s linear infinite;
+}
+.caustic-b {
+  --ct: 360px;
+  opacity: 0.22;
+  animation: caustic-b 38s linear infinite;
+}
+@keyframes caustic-a {
+  to {
+    transform: translate3d(var(--ct), var(--ct), 0);
+  }
+}
+@keyframes caustic-b {
+  to {
+    transform: translate3d(calc(var(--ct) * -1), var(--ct), 0);
+  }
+}
+
+/* ---------- Light rays from the surface ---------- */
+.sea-rays {
+  inset: 0;
+  opacity: calc(0.5 + var(--p) * 0.4);
+}
+.ray {
+  position: absolute;
+  top: -20vh;
+  left: var(--x);
+  width: var(--w);
+  height: 130vh;
+  background: linear-gradient(180deg, rgba(255, 252, 226, 0.5), rgba(255, 252, 226, 0) 78%);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 45%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 45%, transparent);
+  transform-origin: 50% 0;
+  transform: rotate(var(--r));
+  animation: ray-sway var(--t) ease-in-out var(--d) infinite alternate;
+  will-change: transform, opacity;
+}
+@keyframes ray-sway {
+  0% {
+    transform: rotate(calc(var(--r) - 3deg));
+    opacity: 0.5;
+  }
+  100% {
+    transform: rotate(calc(var(--r) + 3deg));
+    opacity: 1;
+  }
+}
+
+/* ---------- Fish you can feed ----------
+   sea.js moves them (translate on .pet) and flips/tilts the picture. Click the water and food
+   sinks; the fish swim over and eat it. */
+.sea-pets,
+.sea-food {
+  inset: 0;
+}
+.pet {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.pet-body img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 6px 8px rgba(20, 70, 110, 0.22));
+  will-change: transform;
+}
+.pet.gulp .pet-body {
+  animation: gulp 0.32s ease-out;
+}
+@keyframes gulp {
+  40% {
+    scale: 1.14 0.9;
+  }
+}
+.food {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f9e2b0, #c78d4f);
+  box-shadow: 0 0 0 1px rgba(120, 70, 20, 0.28);
+  will-change: transform, opacity;
+}
+.ripple {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  animation: ripple 1s ease-out forwards;
+}
+.ripple.r2 {
+  animation-delay: 0.18s;
+  opacity: 0;
+}
+@keyframes ripple {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(6);
+    opacity: 0;
+  }
+}
+.nibble {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  animation: nibble 0.5s ease-out forwards;
+}
+@keyframes nibble {
+  to {
+    transform: translateY(-14px) scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* ---------- Seagrass near the sea floor ---------- */
+.sea-grass {
+  inset: 0;
+  pointer-events: none;
+  /* fades in once you are under the surface, and out again as the beach rises */
+  opacity: calc(clamp(0, (var(--p) - 0.04) * 10, 1) * (1 - clamp(0, (var(--p) - 0.84) * 8, 1)) * 0.95);
+}
+.grass {
+  position: absolute;
+  bottom: -3vh;
+  height: auto;
+  transform-origin: 50% 100%;
+  animation: grass-sway 7s ease-in-out infinite alternate;
+  filter: drop-shadow(0 -2px 6px rgba(20, 90, 80, 0.18));
+}
+.g-1 {
+  left: -3vw;
+  width: clamp(190px, 26vw, 380px);
+}
+.g-2 {
+  left: 44vw;
+  width: clamp(130px, 17vw, 260px);
+  animation-delay: -2.5s;
+}
+.g-3 {
+  right: -4vw;
+  width: clamp(170px, 23vw, 340px);
+  scale: -1 1;
+  animation-delay: -4.5s;
+}
+@keyframes grass-sway {
+  from {
+    transform: rotate(-1.6deg) skewX(-1.5deg);
+  }
+  to {
+    transform: rotate(1.8deg) skewX(1.5deg);
+  }
+}
+
+/* ---------- Shells / starfish drifting past (moved by sea.js) ---------- */
+.sea-life {
+  inset: 0;
+}
+.life {
+  position: absolute;
+  top: 0;
+  left: var(--x);
+  --size: clamp(84px, 11vw, 170px);
+  width: var(--size);
+  margin-top: calc(var(--size) / -2);
+  opacity: 0.5;
+  will-change: transform;
+}
+.life-img {
+  width: 100%;
+  height: auto;
+  transform: scaleX(var(--flip, 1)) rotate(var(--rot, 0deg));
+  animation: life-sway 11s ease-in-out infinite alternate;
+}
+@keyframes life-sway {
+  to {
+    transform: scaleX(var(--flip, 1)) rotate(calc(var(--rot, 0deg) + 5deg)) translateY(8px);
+  }
+}
+
+/* ---------- Sky + horizon (scrolls up and away) ---------- */
+.sea-sky {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 90vh;
+  translate: 0 calc(var(--sy) * -0.85px);
+  will-change: transform;
+}
+.sky-grad {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #5a9ad6 0%, #86b9e6 40%, #b8dbf2 74%, #e0f1f9 100%);
+}
+.sky-sun {
+  position: absolute;
+  top: -22vh;
+  right: -6vw;
+  width: 62vw;
+  height: 62vw;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.32) 45%, rgba(255, 255, 255, 0));
+}
+.cloud {
+  position: absolute;
+  top: var(--y);
+  left: -40vw;
+  width: var(--w);
+  aspect-ratio: 1000 / 560;
+  opacity: var(--o);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  animation: cloud-drift var(--t) linear var(--d) infinite;
+  will-change: transform;
+}
+@keyframes cloud-drift {
+  to {
+    transform: translate3d(calc(100vw + 80vw), 0, 0);
+  }
+}
+.sky-haze {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.55));
+}
+
+/* Horizon: three bands of looping waves where sea meets sky */
+.horizon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.hz {
+  position: absolute;
+  left: 0;
+  right: 0;
+  animation: wave-bob var(--bob, 7s) ease-in-out infinite alternate;
+}
+.hz-tile {
+  width: calc(100% + var(--tile));
+  height: var(--th);
+  background: var(--tile-img) 0 0 / var(--tile) var(--th) repeat-x;
+  animation: wave-drift var(--speed) linear infinite;
+  will-change: transform;
+}
+@keyframes wave-drift {
+  to {
+    transform: translate3d(calc(var(--tile) * -1), 0, 0);
+  }
+}
+@keyframes wave-bob {
+  to {
+    transform: translate3d(0, -8px, 0);
+  }
+}
+.hz-1 {
+  --tile: 1400px;
+  --th: 120px;
+  --speed: 90s;
+  --bob: 9s;
+  bottom: -22px;
+  --tile-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1400 120'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='.3' stop-color='%23b9e8f0'/%3E%3Cstop offset='1' stop-color='%23b9e8f0' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23g)' d='M0,40 C233,18 467,18 700,40 S1167,62 1400,40 V120 H0Z'/%3E%3Cpath fill='none' stroke='%23fff' stroke-opacity='.8' stroke-width='2.5' d='M0,40 C233,18 467,18 700,40 S1167,62 1400,40'/%3E%3C/svg%3E");
+}
+.hz-1 .hz-tile {
+  animation-direction: reverse;
+}
+.hz-2 {
+  --tile: 1000px;
+  --th: 110px;
+  --speed: 62s;
+  --bob: 7s;
+  bottom: -42px;
+  --tile-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 110'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='.3' stop-color='%2399e0ec'/%3E%3Cstop offset='1' stop-color='%2399e0ec' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23g)' d='M0,36 C167,16 333,16 500,36 S833,56 1000,36 V110 H0Z'/%3E%3Cpath fill='none' stroke='%23fff' stroke-opacity='.65' stroke-width='2.5' d='M0,36 C167,16 333,16 500,36 S833,56 1000,36'/%3E%3C/svg%3E");
+}
+.hz-3 {
+  --tile: 1200px;
+  --th: 100px;
+  --speed: 44s;
+  --bob: 5.5s;
+  bottom: -62px;
+  --tile-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='.3' stop-color='%2384d4e6'/%3E%3Cstop offset='1' stop-color='%2384d4e6' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23g)' d='M0,32 C200,12 400,12 600,32 S1000,52 1200,32 V100 H0Z'/%3E%3Cpath fill='none' stroke='%23fff' stroke-opacity='.55' stroke-width='2.5' d='M0,32 C200,12 400,12 600,32 S1000,52 1200,32'/%3E%3C/svg%3E");
+}
+.hz-3 .hz-tile {
+  animation-direction: reverse;
+}
+
+/* Sun glitter just under the horizon */
+.glints {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 40vh;
+}
+.glints i {
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  animation: glint 3s ease-in-out infinite;
+}
+@keyframes glint {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+}
+
+/* ---------- Bubbles: small, slow, endlessly rising (fade in and out, so the loop has no jump) ---------- */
+.sea-bubbles {
+  inset: 0;
+  translate: 0 calc(var(--p) * -14vh);
+}
+.bubble {
+  position: absolute;
+  left: var(--x);
+  bottom: -40px;
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 32% 30%,
+    rgba(255, 255, 255, 0.95) 0 14%,
+    rgba(255, 255, 255, 0.22) 40%,
+    rgba(150, 215, 240, 0.14) 72%,
+    rgba(255, 255, 255, 0.55) 100%
+  );
+  box-shadow: inset -2px -3px 6px rgba(70, 170, 215, 0.3), inset 2px 2px 3px rgba(255, 255, 255, 0.85);
+  opacity: 0;
+  animation: bubble-rise var(--t) linear var(--d) infinite;
+  will-change: transform, opacity;
+}
+@keyframes bubble-rise {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.85;
+  }
+  33% {
+    transform: translate3d(var(--w), -38vh, 0);
+  }
+  66% {
+    transform: translate3d(calc(var(--w) * -0.6), -76vh, 0);
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate3d(calc(var(--w) * 0.4), -115vh, 0);
+    opacity: 0;
+  }
+}
+
+/* ---------- Beach: rises in over the last stretch of the page ---------- */
+.sea-beach {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 44vh;
+  translate: 0 calc((1 - clamp(0, (var(--p) - 0.8) * 5, 1)) * 112%);
+  will-change: transform;
+}
+.sand {
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .56 0 0 0 0 .43 0 0 0 0 .25 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, rgba(240, 227, 198, 0) 0%, #f0e2bf 26%, #ead6a8 62%, #e3caa0 100%);
+}
+/* ---------- Shoreline: foam fronts that surge up the sand and slide back ---------- */
+.wet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -6px;
+  height: 70%;
+  background: linear-gradient(180deg, rgba(150, 118, 78, 0), rgba(150, 118, 78, 0.24) 38%, rgba(150, 118, 78, 0));
+  animation: wet-sheen 13s cubic-bezier(0.45, 0.05, 0.35, 1) infinite;
+}
+@keyframes wet-sheen {
+  0%,
+  100% {
+    transform: translate3d(0, -14px, 0);
+    opacity: 0.3;
+  }
+  52% {
+    transform: translate3d(0, 26px, 0);
+    opacity: 1;
+  }
+}
+.wash {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 150px;
+  opacity: 0;
+  animation: wash var(--wt) cubic-bezier(0.45, 0.05, 0.35, 1) var(--wd) infinite;
+  will-change: transform, opacity;
+}
+.wash-tile {
+  width: calc(100% + var(--tile));
+  height: 100%;
+  background: var(--tile-img) 0 0 / var(--tile) 100% repeat-x;
+  animation: wave-drift var(--speed) linear infinite;
+  will-change: transform;
+}
+/* the foam front rushes up the beach, thins out, then drains back into the sea */
+@keyframes wash {
+  0% {
+    transform: translate3d(0, -26px, 0);
+    opacity: 0;
+  }
+  14% {
+    opacity: 0.95;
+  }
+  54% {
+    transform: translate3d(0, 30px, 0);
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate3d(0, -16px, 0);
+    opacity: 0;
+  }
+}
+.wash-1 {
+  --tile: 1400px;
+  --speed: 150s;
+  --wt: 13s;
+  --wd: 0s;
+  top: -52px;
+  --tile-img: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201400%20150'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='0'%20y2='1'%3E%3Cstop%20offset='.25'%20stop-color='%23fff'%20stop-opacity='0.85'/%3E%3Cstop%20offset='1'%20stop-color='%23fff'%20stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20fill='url%28%23g%29'%20d='M0,48%20Q54.5,70.9%20109.0,48%20Q168.8,72.1%20228.6,48%20Q298.7,61.3%20368.7,48%20Q414.2,76.7%20459.7,48%20Q515.1,64.7%20570.5,48%20Q655.3,69.4%20740.1,48%20Q818.6,69.5%20897.1,48%20Q967.6,63.0%201038.2,48%20Q1108.6,77.4%201179.0,48%20Q1244.9,74.8%201310.8,48%20Q1355.4,61.3%201400.0,48%20V150%20H0Z'/%3E%3Cpath%20fill='none'%20stroke='%23fff'%20stroke-opacity='0.95'%20stroke-width='4'%20stroke-linecap='round'%20stroke-dasharray='46%207%2020%206%2064%2010'%20d='M0,48%20Q54.5,70.9%20109.0,48%20Q168.8,72.1%20228.6,48%20Q298.7,61.3%20368.7,48%20Q414.2,76.7%20459.7,48%20Q515.1,64.7%20570.5,48%20Q655.3,69.4%20740.1,48%20Q818.6,69.5%20897.1,48%20Q967.6,63.0%201038.2,48%20Q1108.6,77.4%201179.0,48%20Q1244.9,74.8%201310.8,48%20Q1355.4,61.3%201400.0,48'/%3E%3Cpath%20fill='none'%20stroke='%23fff'%20stroke-opacity='0.52'%20stroke-width='2'%20stroke-linecap='round'%20stroke-dasharray='10%207%2022%209%206%2012'%20d='M0,64%20Q56.0,83.5%20112.0,64%20Q169.0,85.0%20226.0,64%20Q302.2,79.7%20378.5,64%20Q455.1,82.7%20531.8,64%20Q583.2,82.1%20634.6,64%20Q711.4,81.9%20788.1,64%20Q876.3,85.4%20964.5,64%20Q1030.6,77.2%201096.7,64%20Q1151.8,86.6%201207.0,64%20Q1286.8,83.3%201366.7,64%20Q1383.3,81.6%201400.0,64'/%3E%3C/svg%3E");
+}
+.wash-2 {
+  --tile: 1100px;
+  --speed: 110s;
+  --wt: 9.5s;
+  --wd: -4s;
+  top: -36px;
+  --tile-img: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201100%20130'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='0'%20y2='1'%3E%3Cstop%20offset='.25'%20stop-color='%23fff'%20stop-opacity='0.7'/%3E%3Cstop%20offset='1'%20stop-color='%23fff'%20stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20fill='url%28%23g%29'%20d='M0,40%20Q42.9,65.4%2085.9,40%20Q125.3,61.3%20164.7,40%20Q202.7,54.0%20240.7,40%20Q310.6,53.4%20380.6,40%20Q438.1,57.3%20495.5,40%20Q546.4,57.9%20597.3,40%20Q639.0,63.3%20680.7,40%20Q718.9,53.7%20757.0,40%20Q792.7,54.3%20828.4,40%20Q877.7,64.4%20926.9,40%20Q975.2,51.8%201023.5,40%20Q1061.7,65.9%201100.0,40%20V130%20H0Z'/%3E%3Cpath%20fill='none'%20stroke='%23fff'%20stroke-opacity='0.9'%20stroke-width='4'%20stroke-linecap='round'%20stroke-dasharray='30%208%2014%206%2050%209'%20d='M0,40%20Q42.9,65.4%2085.9,40%20Q125.3,61.3%20164.7,40%20Q202.7,54.0%20240.7,40%20Q310.6,53.4%20380.6,40%20Q438.1,57.3%20495.5,40%20Q546.4,57.9%20597.3,40%20Q639.0,63.3%20680.7,40%20Q718.9,53.7%20757.0,40%20Q792.7,54.3%20828.4,40%20Q877.7,64.4%20926.9,40%20Q975.2,51.8%201023.5,40%20Q1061.7,65.9%201100.0,40'/%3E%3Cpath%20fill='none'%20stroke='%23fff'%20stroke-opacity='0.50'%20stroke-width='2'%20stroke-linecap='round'%20stroke-dasharray='10%207%2022%209%206%2012'%20d='M0,56%20Q48.0,71.4%2096.0,56%20Q171.9,72.4%20247.8,56%20Q304.9,68.0%20362.0,56%20Q405.8,76.8%20449.6,56%20Q517.2,67.2%20584.7,56%20Q646.1,73.1%20707.5,56%20Q780.9,67.6%20854.3,56%20Q904.9,66.4%20955.4,56%20Q1027.7,75.8%201100.0,56'/%3E%3C/svg%3E");
+}
+.wash-2 .wash-tile {
+  animation-direction: reverse;
+}
+.wash-3 {
+  --tile: 900px;
+  --speed: 80s;
+  --wt: 7s;
+  --wd: -2.4s;
+  top: -22px;
+  --tile-img: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20900%20100'%3E%3Cdefs%3E%3ClinearGradient%20id='g'%20x1='0'%20y1='0'%20x2='0'%20y2='1'%3E%3Cstop%20offset='.25'%20stop-color='%23fff'%20stop-opacity='0.55'/%3E%3Cstop%20offset='1'%20stop-color='%23fff'%20stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20fill='url%28%23g%29'%20d='M0,32%20Q36.5,48.2%2073.0,32%20Q120.1,50.2%20167.2,32%20Q201.8,42.8%20236.4,32%20Q270.1,42.7%20303.8,32%20Q352.1,41.6%20400.5,32%20Q443.8,42.6%20487.1,32%20Q524.4,45.2%20561.8,32%20Q612.7,47.3%20663.7,32%20Q694.0,43.3%20724.4,32%20Q758.1,50.5%20791.7,32%20Q845.9,49.7%20900.0,32%20V100%20H0Z'/%3E%3Cpath%20fill='none'%20stroke='%23fff'%20stroke-opacity='0.85'%20stroke-width='4'%20stroke-linecap='round'%20stroke-dasharray='24%206%2010%206%2038%207'%20d='M0,32%20Q36.5,48.2%2073.0,32%20Q120.1,50.2%20167.2,32%20Q201.8,42.8%20236.4,32%20Q270.1,42.7%20303.8,32%20Q352.1,41.6%20400.5,32%20Q443.8,42.6%20487.1,32%20Q524.4,45.2%20561.8,32%20Q612.7,47.3%20663.7,32%20Q694.0,43.3%20724.4,32%20Q758.1,50.5%20791.7,32%20Q845.9,49.7%20900.0,32'/%3E%3C/svg%3E");
+}
+.beach-shell {
+  position: absolute;
+  height: auto;
+  filter: drop-shadow(0 6px 5px rgba(120, 90, 50, 0.3));
+}
+
+/* ---------- The chapter color tints the whole sea very gently ---------- */
+.sea-tint {
+  inset: 0;
+  background-color: var(--page-bg);
+  opacity: 0.24;
+  transition: background-color 0.9s ease;
+}
+
+/* ---------- Phones: fewer, smaller things ---------- */
+@media (max-width: 700px) {
+  .caustic-b,
+  .ray:nth-child(3),
+  .bubble:nth-child(n + 9),
+  .glints i:nth-child(n + 9) {
+    display: none;
+  }
+  .life {
+    --size: clamp(72px, 22vw, 110px);
+    opacity: 0.4;
+  }
+  .sea-beach {
+    height: 34vh;
+  }
+  .beach-shell:nth-of-type(n + 4) {
+    display: none;
+  }
+  .beach-shell {
+    bottom: 52% !important; /* keep them above the footer text */
+  }
+}
+
+/* ---------- Reduced motion: a calm still picture ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sea * {
+    animation: none !important;
+  }
+  .sea-pets,
+  .sea-food,
+  .sea-grass,
+  .sea-life,
+  .sea-bubbles,
+  .glints {
+    display: none;
+  }
+  .wash {
+    opacity: 0.7;
+  }
+}

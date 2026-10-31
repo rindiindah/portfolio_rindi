@@ -1,0 +1,94 @@
+/* ==========================================================================
+   DESIGN TOKENS — change colors, fonts, and sizes here.
+   Palette: cheerful but calm. Cream/white do ~80% of the work; accents are
+   used in small, meaningful places. Text never uses the "main" accent shade,
+   only the "deep" shade, so contrast stays readable.
+   ========================================================================== */
+:root {
+  /* Base */
+  --cream: #fff9f0;
+  --white: #ffffff;
+  --sand: #f3ece0;
+  --ink: #24304a;
+  --muted: #46526a;
+  --line: rgba(36, 48, 74, 0.1);
+
+  /* Accents: main / tint (backgrounds) / deep (text on light). An ocean palette:
+     sky = open water blue, aqua = shallow-water teal, dusk = twilight periwinkle,
+     shore = warm beach sand. */
+  --sky: #4f9ad6;
+  --sky-tint: #e6f1fa;
+  --sky-deep: #1f5f94;
+
+  --shore: #d6b99a;
+  --shore-tint: #f8f0e2;
+  --shore-deep: #6f5136;
+
+  --aqua: #4db6bd;
+  --aqua-tint: #e1f4f5;
+  --aqua-deep: #176a73;
+
+  --dusk: #7f93dc;
+  --dusk-tint: #e9edfa;
+  --dusk-deep: #3a4a9a;
+
+  /* Type */
+  /* splash name: put a licensed Daydream .woff2 at public/fonts/daydream.woff2 and it is used first (see splash.css) */
+  --font-name: 'Daydream', 'Great Vibes', 'Brush Script MT', cursive;
+  --font: 'Libre Baskerville Variable', 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+
+  /* Shape */
+  --radius: 16px;
+  --radius-lg: 24px;
+  --pill: 999px;
+
+  /* Layout */
+  --nav-h: 68px;
+  --maxw: 1200px;
+  --gutter: clamp(16px, 5vw, 48px);
+
+  /* Boxes: one see-through fill and one highlight color for every box on the site */
+  --box-bg: rgba(255, 255, 255, 0.46);
+  --box-bg-strong: rgba(255, 255, 255, 0.62);
+  --box-hl: #4f9ad6;
+  --box-hl-tint: #e6f1fa;
+  --box-hl-soft: #cfe4f6;
+  --box-hl-deep: #1f5f94;
+
+  /* Effects */
+  --shadow-soft: 0 12px 32px -14px rgba(36, 48, 74, 0.22);
+  --shadow-card: 0 1px 0 rgba(36, 48, 74, 0.04), 0 18px 40px -22px rgba(36, 48, 74, 0.2);
+  --ease-out: cubic-bezier(0.22, 0.8, 0.3, 1);
+
+  /* The page background color. JavaScript changes this as you scroll between chapters. */
+  --page-bg: var(--cream);
+}
+
+/* Accent switch: put data-accent="sky|aqua|shore|dusk" on any element
+   and everything inside can use --a, --a-tint, --a-deep. */
+/* --a-soft is a slightly stronger tint (the accent at ~24% over white). It stays visible on
+   top of a chapter's own pale background, where --a-tint would disappear. */
+[data-accent='sky'] {
+  --a: var(--sky);
+  --a-tint: var(--sky-tint);
+  --a-soft: #d3e7f6;
+  --a-deep: var(--sky-deep);
+}
+[data-accent='shore'] {
+  --a: var(--shore);
+  --a-tint: var(--shore-tint);
+  --a-soft: #f0e4cd;
+  --a-deep: var(--shore-deep);
+}
+[data-accent='aqua'] {
+  --a: var(--aqua);
+  --a-tint: var(--aqua-tint);
+  --a-soft: #cdebed;
+  --a-deep: var(--aqua-deep);
+}
+[data-accent='dusk'] {
+  --a: var(--dusk);
+  --a-tint: var(--dusk-tint);
+  --a-soft: #d9e0f6;
+  --a-deep: var(--dusk-deep);
+}

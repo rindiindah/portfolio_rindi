@@ -1,0 +1,71 @@
+---
+/**
+ * Welcome screen: "Rindi Indah Lestari / Present". A calm underwater scene that brightens toward the surface,
+ * then drains away downward to reveal the page. (behavior: scripts/splash.js, look: styles/splash.css)
+ * Only shown when <html> has the "has-splash" class (set in Base.astro: not with "reduce motion").
+ *
+ * It is built to be light: the rays, the moving caustic light and the seabed are plain CSS layers
+ * (the browser moves them on the graphics card); only bubbles, plankton, fish and jellyfish are drawn on the canvas.
+ */
+const words = ['Rindi', 'Indah', 'Lestari'];
+const rays = [
+  { l: '6%', w: '14vw', r: '12deg', d: '0s' },
+  { l: '24%', w: '10vw', r: '9deg', d: '-2s' },
+  { l: '44%', w: '16vw', r: '11deg', d: '-4s' },
+  { l: '64%', w: '11vw', r: '8deg', d: '-1s' },
+  { l: '82%', w: '14vw', r: '12deg', d: '-3s' },
+];
+---
+
+<div class="splash" data-splash role="dialog" aria-label="Welcome" aria-describedby="splash-title">
+  <div class="splash-sheet" data-splash-sheet>
+    <div class="splash-light" data-splash-light aria-hidden="true"></div>
+    <div class="splash-caustic" aria-hidden="true"></div>
+    <div class="splash-rays" data-splash-rays aria-hidden="true">
+      {rays.map((r) => <i style={`left:${r.l};width:${r.w};--r:${r.r};animation-delay:${r.d}`}></i>)}
+    </div>
+    <canvas class="splash-canvas" data-splash-canvas aria-hidden="true"></canvas>
+
+    <div class="splash-floor" data-splash-floor aria-hidden="true">
+      <img class="fl fl-g1" src="/images/background/grass-1.webp" alt="" width="700" height="470" decoding="async" />
+      <img class="fl fl-g2" src="/images/background/grass-2.webp" alt="" width="560" height="530" decoding="async" />
+      <img class="fl fl-g3" src="/images/background/grass-1.webp" alt="" width="700" height="470" decoding="async" />
+      <img class="fl fl-s1" src="/images/background/scallop.webp" alt="" width="420" height="318" decoding="async" />
+      <img class="fl fl-s2" src="/images/background/pearl.webp" alt="" width="554" height="560" decoding="async" />
+      <img class="fl fl-s3" src="/images/background/starfish.webp" alt="" width="640" height="579" decoding="async" />
+    </div>
+
+    <div class="splash-stage">
+      <h1 class="splash-title" id="splash-title" data-splash-title aria-label="Rindi Indah Lestari">
+        {
+          words.map((w, wi) => (
+            <span class:list={['sw', { 'sw-blue': wi === 2 }]} aria-hidden="true">
+              {/* one piece per word (not per letter): a script font needs its letters to stay joined */}
+              <span class="sl">
+                <span class="sl-in">{w}</span>
+              </span>
+            </span>
+          ))
+        }
+      </h1>
+
+      <p class="splash-by" data-splash-by>
+        <i class="by-line by-line-l" aria-hidden="true"></i>
+        <span class="by-text">Present</span>
+        <i class="by-line by-line-r" aria-hidden="true"></i>
+      </p>
+
+      <svg class="splash-spark sp-a" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 0c1.3 11 4.2 16.7 20 20-15.8 3.3-18.7 9-20 20-1.3-11-4.2-16.7-20-20C15.8 16.7 18.7 11 20 0z"></path></svg>
+      <svg class="splash-spark sp-b" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 0c1.3 11 4.2 16.7 20 20-15.8 3.3-18.7 9-20 20-1.3-11-4.2-16.7-20-20C15.8 16.7 18.7 11 20 0z"></path></svg>
+    </div>
+
+    <button class="splash-skip" type="button" data-splash-skip>
+      <span>Enter</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v12m0 0-5-5m5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+  </div>
+  <!-- the foam edge on the water's surface while it drains away -->
+  <div class="splash-edge" aria-hidden="true">
+    <i class="edge-a"></i>
+  </div>
+</div>

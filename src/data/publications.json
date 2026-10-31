@@ -1,0 +1,58 @@
+{
+  "focus": "My research centers on forecasting air pollutants using deep learning and hybrid models.",
+  "items": [
+    {
+      "year": "2026",
+      "role": "Presenter",
+      "title": "Hybrid LSTM and CNN Model for Multivariate Prediction of SO2 Air Quality in Cilacap",
+      "venue": "ICADEIS 2026",
+      "conference": "International Conference Advancement in Data Sciences, E-Learning, and Information System",
+      "publisher": "IEEE",
+      "tags": ["SO₂"],
+      "doi": "https://doi.org/10.1109/ICADEIS71120.2026.11644506",
+      "project": "air-quality"
+    },
+    {
+      "year": "2025",
+      "role": "Presenter",
+      "title": "Implementation of LSTM, GRU, and XGBoost Models in Forecasting PM10 and PM2.5 Concentrations in Time Series Data",
+      "venue": "ICOIACT 2025",
+      "conference": "International Conference on Information and Communications Technology",
+      "publisher": "IEEE",
+      "tags": ["PM10", "PM2.5"],
+      "doi": "https://doi.org/10.1109/ICOIACT67584.2025.11345032"
+    },
+    {
+      "year": "2025",
+      "role": "Author",
+      "title": "Hybrid LSTM-ARIMA Model For Forecasting NO₂ Gas Concentrations in Air Quality Data",
+      "venue": "ISRITI 2025",
+      "conference": "International Seminar on Research of Information Technology and Intelligent Systems",
+      "publisher": "IEEE",
+      "tags": ["NO₂"],
+      "doi": "https://doi.org/10.1109/ISRITI68345.2025.11393368"
+    },
+    {
+      "year": "2025",
+      "role": "Author",
+      "title": "Towards an Early-Warning System for Respiratory Health: Predicting NO₂ Exposure with LSTM-GRU-CNN-Hybrid Model",
+      "venue": "COMNETSAT 2025",
+      "conference": "International Conference on Communications, Networks, and Satellite",
+      "publisher": "IEEE",
+      "tags": ["NO₂"],
+      "doi": "https://doi.org/10.1109/COMNETSAT68601.2025.11324542"
+    },
+    {
+      "year": "2025",
+      "role": "Author",
+      "title": "Sistem Pendukung Keputusan Pemilihan Marketplace Menggunakan Metode SMART Studi Kasus Kabupaten Banyumas",
+      "subtitle": "Marketplace selection decision support system using the SMART method: a Banyumas Regency case study",
+      "venue": "CENTIVE 2025",
+      "conference": "Conference on Emerging Technologies in Informatics, Multimedia, and Education",
+      "publisher": "",
+      "tags": ["Decision support"],
+      "doi": "https://drive.google.com/file/d/1WJ_imKSwtLpD9kmD_VEbgpZu1I4Lt8bI/view?usp=sharing",
+      "linkLabel": "Paper"
+    }
+  ]
+}

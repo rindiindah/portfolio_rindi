@@ -1,0 +1,83 @@
+---
+import '@fontsource-variable/libre-baskerville';
+import '@fontsource-variable/libre-baskerville/wght-italic.css';
+import '@fontsource/great-vibes';
+import '../styles/tokens.css';
+import '../styles/global.css';
+import '../styles/sections.css';
+import '../styles/projects.css';
+import '../styles/sticker.css';
+import '../styles/sea.css';
+import '../styles/splash.css';
+import Splash from '../components/Splash.astro';
+import SeaBackground from '../components/SeaBackground.astro';
+import profile from '../data/profile.json';
+
+const {
+  title = `${profile.name}: Data Scientist, Researcher, Content Creator`,
+  description = profile.description,
+  image = '/og.png',
+} = Astro.props;
+
+// Absolute URLs are only possible once the site address is known (see astro.config.mjs).
+const site = Astro.site;
+const canonical = site ? new URL(Astro.url.pathname, site).href : undefined;
+const ogImage = site ? new URL(image, site).href : image;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta name="theme-color" content="#FFF9F0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Mark the page as "JS is running" before first paint. Animated content starts hidden only
+         in this mode. If the animation script fails to start, the safety timer shows everything. -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      // Welcome screen (not with "reduce motion", and not if the address has ?nosplash). The safety timer below drops it if the script never starts.
+      window.__splashActive = false;
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && location.search.indexOf('nosplash') < 0) {
+        document.documentElement.classList.add('has-splash');
+        window.__splashActive = true;
+      }
+      window.setTimeout(function () {
+        if (!window.__motionReady) document.documentElement.classList.remove('js');
+        if (!window.__splashReady && document.documentElement.classList.contains('has-splash')) {
+          document.documentElement.classList.remove('has-splash', 'splash-lock');
+          window.__splashActive = false;
+          if (window.__playHero) window.__playHero();
+        }
+      }, 4000);
+    </script>
+  </head>
+  <body>
+    <Splash />
+    <SeaBackground />
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="progress" aria-hidden="true"><span data-progress></span></div>
+    <slot />
+
+    <script>
+      import '../scripts/ui.js';
+      import '../scripts/motion.js';
+      import '../scripts/sea.js';
+      import '../scripts/splash.js';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,68 @@
+---
+import profile from '../data/profile.json';
+import Sparkle from './Sparkle.astro';
+import { existsPublic } from '../lib/utils.js';
+
+// Cut-out photo (transparent background): public/images/profile/rindi-cutout.webp
+const cutout = existsPublic(profile.heroPhoto) ? profile.heroPhoto : null;
+const word = profile.name.split(' ')[0].toUpperCase();
+---
+
+<!-- Giant first name sits BEHIND the cut-out photo (which floats gently); the roles sit in front, in the middle.
+     When you scroll, the photo glides down into the About section (see motion.js), so it lives in its own
+     layer above the page instead of inside the hero. -->
+<section id="top" class="landing" data-chapter="landing" data-tint="#FFF9F0" data-hero-stage>
+  <div class="container hero" data-landing-inner>
+    <h1 class="sr-only">{profile.name}</h1>
+
+    <div class="hero-stage">
+      <p class="hero-hi" data-hero>Hi, I'm</p>
+
+      <div class="hero-word" data-hero aria-hidden="true">
+        <span class="hero-word-inner">{word}</span>
+      </div>
+
+      <!-- A real-looking tulip bouquet on each side (the right one is the left one, mirrored) -->
+      <div class="hero-flowers" data-hero aria-hidden="true">
+        <img class="hf hf-l" src="/images/background/bouquet.webp" alt="" width="1080" height="1080" decoding="async" />
+        <img class="hf hf-r" src="/images/background/bouquet.webp" alt="" width="1080" height="1080" decoding="async" />
+      </div>
+
+      <div class="hero-caption" data-hero>
+        <p class="roles">
+          {profile.roles.map((r, i) => `${r.label}${i < profile.roles.length - 1 ? ', ' : ''}`)}
+        </p>
+        {profile.tagline && <p class="tagline">{profile.tagline}</p>}
+      </div>
+
+      <!-- Twinkling glows around the photo -->
+      <div class="hero-sparkles" data-hero aria-hidden="true">
+        <Sparkle size={46} class="hs hs-1" delay={0} />
+        <Sparkle size={28} class="hs hs-2" delay={0.8} />
+        <Sparkle size={38} class="hs hs-3" delay={1.6} />
+        <Sparkle size={24} class="hs hs-4" delay={2.2} />
+        <Sparkle size={34} class="hs hs-5" delay={0.4} />
+        <Sparkle size={20} class="hs hs-6" delay={1.2} />
+        <Sparkle size={30} class="hs hs-7" delay={2.8} />
+        <Sparkle size={22} class="hs hs-8" delay={1.9} />
+      </div>
+    </div>
+  </div>
+
+  {
+    cutout && (
+      <div class="hero-photo-wrap" data-hero>
+        <div class="hero-photo-inner" data-hero-photo>
+          <img
+            src={cutout}
+            alt={`Portrait of ${profile.name}`}
+            width="880"
+            height="1248"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </div>
+      </div>
+    )
+  }
+</section>
