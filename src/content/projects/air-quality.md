@@ -52,7 +52,6 @@ tools:
   - "Machine learning"
   - "Interactive visualization"
   - "Web dashboard"
-  - ""
 
 results:
   summary: "A working web dashboard that presents historical and predicted SO₂ levels and air quality trends. "
