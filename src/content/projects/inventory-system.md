@@ -68,7 +68,7 @@ slides:
     poster: "/images/projects/inventory-system/admin.webp"
     alt: "Screen recording of the admin page of the inventory system"
     caption: "Admin page"
-  - src: "/images/projects/inventory-system/manis_project_team1.jpeg"
+  - src: "/images/projects/inventory-system/manis_project_team1.webp"
     alt: "Our team presenting the inventory management website"
     caption: "The team behind the inventory management website"
 

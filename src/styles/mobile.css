@@ -1,0 +1,55 @@
+/* ==========================================================================
+   MOBILE PERFORMANCE: loaded last, only applies on phones / tablets / touch screens.
+   The desktop look is untouched. What it does:
+   - turns off "backdrop-filter" blur (re-blurring the animated ocean behind every box on every
+     scroll frame is the most expensive thing on a phone) and makes the boxes a little less see-through
+     instead, so they still look like frosted glass
+   - makes the seabed / light-ray / shimmer layers still pictures, and drops soft drop-shadow filters
+   - fewer bubbles
+   ========================================================================== */
+@media (max-width: 820px), (pointer: coarse) {
+  *,
+  *::before,
+  *::after {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .nav {
+    background: rgba(255, 255, 255, 0.94);
+  }
+  .sticker,
+  .skill-card,
+  .cert,
+  .contact-item,
+  .pubs,
+  .photo-frame,
+  .project-desc {
+    background: rgba(255, 255, 255, 0.68);
+  }
+  .modal::backdrop {
+    background: rgba(36, 48, 74, 0.6);
+  }
+
+  /* the sea: still light rays and shimmer, a calm shoreline, no soft shadows on moving pictures */
+  .ray {
+    animation: none;
+    will-change: auto;
+  }
+  .glints,
+  .caustic-a {
+    animation: none;
+  }
+  .glints {
+    display: none;
+  }
+  .wet {
+    animation: none;
+  }
+  .pet-body img,
+  .grass {
+    filter: none;
+  }
+  .bubble:nth-child(n + 7) {
+    display: none;
+  }
+}

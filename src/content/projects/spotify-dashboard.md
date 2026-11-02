@@ -53,10 +53,10 @@ insights: "[TO FILL: 1–2 lessons learned]"
 # Two documentation slides: the Power BI dashboard, then the Databricks workspace holding the data.
 maxSlides: 2
 slides:
-  - src: "/images/projects/spotify/dasboard1.png"
+  - src: "/images/projects/spotify/dasboard1.webp"
     alt: "Power BI dashboard of the Spotify Chart 2018-2021 with region and artist filters, total streams, streams by title and a ranking table"
     caption: "Power BI dashboard: Spotify Chart 2018–2021"
-  - src: "/images/projects/spotify/databrics.png"
+  - src: "/images/projects/spotify/databrics.webp"
     alt: "Databricks Catalog Explorer showing the tubes_bigdata volume with the Spotify CSV files and the cleaned spotify_clean and x_yt_clean tables"
     caption: "Databricks: raw Spotify, X and YouTube files and the cleaned tables"
 

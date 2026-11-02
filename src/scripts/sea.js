@@ -17,6 +17,9 @@
 
 const sea = document.querySelector('[data-sea]');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Phones and touch screens: the same ocean, but updated at about 30 frames a second, with two fish instead of four.
+const lite = window.matchMedia('(max-width: 820px), (pointer: coarse)').matches;
+const FRAME_GAP = lite ? 30 : 0; // minimum milliseconds between updates
 
 if (sea && !reduceMotion) {
   const items = [...sea.querySelectorAll('[data-depth]')].map((el) => ({
@@ -44,8 +47,14 @@ if (sea && !reduceMotion) {
     }
   };
 
-  const tick = () => {
-    current += (target - current) * 0.09;
+  let lastTick = 0;
+  const tick = (now = performance.now()) => {
+    if (running && now - lastTick < FRAME_GAP) {
+      requestAnimationFrame(tick);
+      return;
+    }
+    lastTick = now;
+    current += (target - current) * (lite ? 0.16 : 0.09);
     if (Math.abs(target - current) < 0.2) {
       current = target;
       running = false;
@@ -72,7 +81,9 @@ if (sea && !reduceMotion) {
   /* ---------------------------------------------------------------------
      Fish feeding
      --------------------------------------------------------------------- */
-  const petEls = [...sea.querySelectorAll('[data-pet]')];
+  const allPets = [...sea.querySelectorAll('[data-pet]')];
+  const petEls = lite ? allPets.slice(0, 2) : allPets;
+  if (lite) allPets.slice(2).forEach((el) => el.remove());
   const feedLayer = sea.querySelector('[data-feed]');
 
   if (petEls.length && feedLayer) {
@@ -126,6 +137,10 @@ if (sea && !reduceMotion) {
 
     let last = performance.now();
     const step = (now) => {
+      if (now - last < FRAME_GAP) {
+        requestAnimationFrame(step);
+        return;
+      }
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       const t = now / 1000;

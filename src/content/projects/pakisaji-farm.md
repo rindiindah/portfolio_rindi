@@ -66,7 +66,7 @@ slides:
   - video: "/images/projects/pakisaji-farm/pakisaji.mp4"
     alt: "Screen recording of the Pakisaji Farm livestock-management website"
     caption: "The livestock-management website in action"
-  - src: "/images/projects/pakisaji-farm/dokumentasi1-new.jpg"
+  - src: "/images/projects/pakisaji-farm/dokumentasi1-new.webp"
     alt: "The team and farm partners in Cikakak Village with the website shown on a laptop"
     caption: "Presenting the website to the farm partners in Cikakak Village"
   - src: "/images/projects/pakisaji-farm/dokumentasi2.webp"

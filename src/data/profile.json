@@ -32,13 +32,13 @@
   ],
   "intro": [
     "I’m a graduate of Telkom University with a Bachelor’s degree in Information Systems, 3.90 GPA with Cum Laude honors.",
-    "I’m also a researcher with five publications in air quality and environmental science, and a content creator with a YouTube channel that has grown to 9,700+ subscribers."
+    "I’m also a researcher with six publications, including a paper accepted in a Q1 international journal and four IEEE-indexed papers, mostly on air quality forecasting, as well as a content creator with a YouTube channel that has grown to 9,700+ subscribers."
   ],
   "pillars": [
     {
       "title": "Researcher",
       "accent": "aqua",
-      "text": "5 publications, 4 of them on air-quality forecasting with LSTM, GRU, CNN, and hybrid models."
+      "text": "6 publications, including a paper accepted in Q1 journal paper and 4 IEEE-indexed papers on air-quality forecasting with LSTM, GRU, CNN, and hybrid models."
     },
     {
       "title": "Content Creator",
@@ -105,7 +105,8 @@
       "items": [
         "Team collaboration",
         "Communication",
-        "Data-driven problem solving"
+        "Data-driven problem solving",
+        "Critical Thinking"
       ]
     }
   ],
