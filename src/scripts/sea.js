@@ -137,6 +137,12 @@ if (sea && !reduceMotion) {
 
     let last = performance.now();
     const step = (now) => {
+      // nothing to animate while the welcome screen covers the ocean
+      if (window.__splashActive) {
+        last = now;
+        requestAnimationFrame(step);
+        return;
+      }
       if (now - last < FRAME_GAP) {
         requestAnimationFrame(step);
         return;

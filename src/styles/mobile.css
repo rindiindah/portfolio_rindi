@@ -52,4 +52,30 @@
   .bubble:nth-child(n + 7) {
     display: none;
   }
+
+  /* Far fewer permanent graphics-card layers: the CSS animations get their own layer while they run anyway,
+     so "will-change" only keeps memory busy. (The fish and the drifting shells are moved by sea.js: they keep it.) */
+  .caustic,
+  .sea-beach,
+  .wash,
+  .wash-tile,
+  .hz-tile,
+  .bubble,
+  .cloud {
+    will-change: auto;
+  }
+
+  /* Project carousel: the blurred copy of the photo behind each slide is a huge blur layer (one per slide),
+     and a slightly tilted clipped box cannot use the graphics card for its videos. Flat color and a straight box instead. */
+  .slide-image::before {
+    display: none;
+  }
+  .car-box {
+    rotate: 0deg;
+  }
+  /* The arrows get their own layer, so they are painted at once instead of after the first tap */
+  .car-btn {
+    transform: translateZ(0);
+    will-change: transform;
+  }
 }
